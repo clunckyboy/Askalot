@@ -138,21 +138,27 @@ class SignInScreen extends StatelessWidget {
               SizedBox(height: 30),
 
               // Tombol Google Sign In
-              OutlinedButton(
-                onPressed: () {
+              Center(
+                child: SizedBox(
+                  width: 180,
+                  child: OutlinedButton(
+                    onPressed: () {
 
-                },
-                child: Center(
-                  child: Image.network(
-                    'http://pngimg.com/uploads/google/google_PNG19635.png',
-                    height: 24.0,
-                  ),
-                ),
-                style: OutlinedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 14),
-                  side: BorderSide(color: Colors.grey[700]!),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    },
+                    child: Center(
+                      child: Image.network(
+                        'http://pngimg.com/uploads/google/google_PNG19635.png',
+                        height: 70.0,
+                      ),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      fixedSize: Size(50, 80),
+                      // padding: EdgeInsets.symmetric(vertical: 20),
+                      side: BorderSide(color: Colors.grey[700]!),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
                   ),
                 ),
               ),
