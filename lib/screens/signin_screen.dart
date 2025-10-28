@@ -88,46 +88,6 @@ class SignInScreen extends StatelessWidget {
               ),
               SizedBox(height: 30),
 
-              // Pemisah "Or sign in with"
-              Row(
-                children: [
-                  Expanded(child: Divider(color: Colors.grey[700])),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Text(
-                      'Or sign in with',
-                      style: TextStyle(color: Colors.grey[400]),
-                    ),
-                  ),
-                  Expanded(child: Divider(color: Colors.grey[700])),
-                ],
-              ),
-              SizedBox(height: 30),
-
-              // Tombol Google Sign In
-              Center(
-                child: SizedBox(
-                  width: 180,
-                  child: OutlinedButton(
-                    onPressed: () {},
-                    child: Center(
-                      child: Image.network(
-                        'http://pngimg.com/uploads/google/google_PNG19635.png',
-                        height: 70.0,
-                      ),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                      fixedSize: Size(50, 80),
-                      side: BorderSide(color: Colors.grey[700]!),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 50),
-
               // Link ke halaman sign up
               RichText(
                 textAlign: TextAlign.center,
