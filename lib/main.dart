@@ -2,6 +2,8 @@ import 'package:askalot/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'screens/signin_screen.dart';
+import 'package:askalot/screens/intro_screen.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -28,7 +30,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: SignInScreen(),
+      home: IntroScreen(),
     );
   }
 }
