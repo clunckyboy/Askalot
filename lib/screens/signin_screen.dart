@@ -86,7 +86,7 @@ class SignInScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 30),
+              SizedBox(height: 325),
 
               // Link ke halaman sign up
               RichText(
