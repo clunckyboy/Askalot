@@ -1,3 +1,4 @@
+import 'package:askalot/screens/account_screen.dart';
 import 'package:askalot/screens/home_screen.dart';
 import 'package:askalot/screens/interests_screen.dart';
 import 'package:askalot/screens/posting_screen.dart';
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: PostingScreen(),
+      home: HomeScreen(),
     );
   }
 }

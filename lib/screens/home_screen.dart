@@ -13,6 +13,21 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<String> filters = ["Recently", "Hot", "Low Vote", "Oldest"];
   int selectedFilter = 0;
 
+  void _onCenterButtonPressed() {
+    // Logika saat tombol '+' ditekan
+    print('Tombol Tengah Ditekan!');
+    // Misalnya, tampilkan dialog, bottom sheet, atau navigasi ke layar baru
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => Container(
+        height: 200,
+        child: const Center(
+          child: Text('Buka Halaman Baru'),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final bgColor = const Color(0xFF1E1E2C);
@@ -116,14 +131,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
 
-      // 🔹 Floating Add Button
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: accent,
-        child: const Icon(Icons.add, size: 32),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-
       // 🔹 Reusable Bottom Navbar
       bottomNavigationBar: CustomBottomNavbar(
         selectedIndex: _selectedTab,
@@ -131,6 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
           setState(() => _selectedTab = index);
           // You can navigate to other screens here if needed
         },
+        onCenterButtonPressed: _onCenterButtonPressed,
       ),
     );
   }
