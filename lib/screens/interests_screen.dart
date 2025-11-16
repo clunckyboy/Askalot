@@ -6,14 +6,14 @@ const Color kPrimaryColor = Color(0xFF9596FF); // Ungu
 const Color kBackgroundColor = Color(0xFF2B2C35); // Latar belakang gelap
 const Color kSecondaryColor = Color(0xFF3D425B); // Latar belakang list item
 
-class InterestsPage extends StatefulWidget {
-  const InterestsPage({super.key});
+class InterestScreen extends StatefulWidget {
+  const InterestScreen({super.key});
 
   @override
-  State<InterestsPage> createState() => _InterestsPageState();
+  State<InterestScreen> createState() => _InterestScreenState();
 }
 
-class _InterestsPageState extends State<InterestsPage> {
+class _InterestScreenState extends State<InterestScreen> {
   // Daftar topik dan status terpilihnya (false = tidak dipilih)
   final Map<String, bool> topics = {
     'Mobile Programming': false,

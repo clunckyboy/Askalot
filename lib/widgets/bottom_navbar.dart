@@ -16,10 +16,10 @@ class CustomBottomNavbar extends StatelessWidget {
     required this.selectedIndex,
     required this.onTabSelected,
     required this.onCenterButtonPressed, // Tombol '+' wajib punya fungsi
-    this.backgroundColor = const Color(0xFF1C1C1E), // Latar belakang bar
+    this.backgroundColor = const Color(0xFF2B2D35), // Latar belakang bar
     this.activeColor = Colors.white,
     this.inactiveColor = Colors.white54,
-    this.activePillColor = const Color(0xFF3A3A3C), // Latar belakang pil
+    this.activePillColor = const Color(0xFF3D425B), // Latar belakang pil
     this.centerButtonColor = const Color(0xFF8B5CF6), // Warna ungu tombol '+'
   });
 
@@ -28,7 +28,8 @@ class CustomBottomNavbar extends StatelessWidget {
     return BottomAppBar(
       color: backgroundColor,
       // Hapus 'shape' dan 'notchMargin' karena barnya datar
-      elevation: 0,
+      elevation: 12,
+      shadowColor: Colors.black,
       child: Padding(
         // Padding disesuaikan agar pas
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),

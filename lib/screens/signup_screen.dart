@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 const Color kPrimaryColor = Color(0xFF9596FF); // Ungu
 const Color kBackgroundColor = Color(0xFF2B2D35); // Latar belakang gelap
 
-class SignUpPage extends StatelessWidget {
-  const SignUpPage({super.key});
+class SignupScreen extends StatelessWidget {
+  const SignupScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

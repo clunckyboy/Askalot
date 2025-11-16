@@ -17,11 +17,15 @@ class SignInScreen extends StatelessWidget {
               SizedBox(height: 40),
 
               // Logo Aplikasi
-              Icon(
-                Icons.chat_bubble_rounded,
-                size: 80,
-                color: Theme.of(context).primaryColor,
+              
+              Image.asset(
+                'assets/images/askalot.png',
+                // width: 90,
+                height: 80,
+                // fit: BoxFit.contain,
               ),
+
+              
               SizedBox(height: 20),
 
               // Judul

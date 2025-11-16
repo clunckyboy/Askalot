@@ -11,7 +11,7 @@ class AccountScreen extends StatefulWidget {
 
 class _AccountScreenState extends State<AccountScreen> {
 
-  int _selectedTab = 0;
+  int _selectedIndex = 0;
 
   Widget _buildInfoLabel(String label) {
     return Text(
@@ -236,9 +236,9 @@ class _AccountScreenState extends State<AccountScreen> {
         ),
       ),
       bottomNavigationBar: CustomBottomNavbar(
-          selectedIndex: _selectedTab,
+          selectedIndex: _selectedIndex,
           onTabSelected: (index) {
-            setState(() => _selectedTab = index);
+            setState(() => _selectedIndex = index);
           },
           onCenterButtonPressed: _onCenterButtonPressed,
       ),

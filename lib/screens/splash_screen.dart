@@ -1,7 +1,43 @@
+import 'package:askalot/screens/signin_screen.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'home_screen.dart';
 
-class IntroScreen extends StatelessWidget {
-  const IntroScreen({super.key});
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    _navigateNextScreen();
+  }
+
+  void _navigateNextScreen() async {
+    await Future.delayed(Duration(milliseconds: 1500), (){});
+
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+          SignInScreen(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
+          },
+          transitionDuration: Duration(milliseconds: 500),
+
+
+      )
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
