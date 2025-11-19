@@ -25,7 +25,6 @@ class SignInScreen extends StatelessWidget {
                 // fit: BoxFit.contain,
               ),
 
-              
               SizedBox(height: 20),
 
               // Judul

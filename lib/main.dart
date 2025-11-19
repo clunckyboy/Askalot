@@ -1,5 +1,5 @@
 import 'package:askalot/screens/account_screen.dart';
-import 'package:askalot/screens/comment_section.dart';
+import 'package:askalot/screens/comment_section_screen.dart';
 import 'package:askalot/screens/edit_account_screen.dart';
 import 'package:askalot/screens/home_screen.dart';
 import 'package:askalot/screens/interests_screen.dart';
@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: SplashScreen(),
+      home: CommentScreen(),
     );
   }
 }
