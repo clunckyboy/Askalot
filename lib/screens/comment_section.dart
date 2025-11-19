@@ -1,30 +1,22 @@
 import 'package:flutter/material.dart';
+import '../widgets/bottom_navbar.dart'; // 1. Import your bottom_navbar widget
 
-// --- Mock Data Models ---
-// In a real app, these would be in their own files (e.g., 'models/comment.dart')
-class Comment {
-  final String author;
-  final String avatarUrl;
-  final String text;
-  final String timestamp;
-  final int upvotes;
-  final List<Comment> replies;
-  bool isExpanded;
+// 2. Convert the main widget to a StatefulWidget
+class CommentScreen extends StatefulWidget {
+  const CommentScreen({super.key});
 
-  Comment({
-    required this.author,
-    required this.avatarUrl,
-    required this.text,
-    required this.timestamp,
-    this.upvotes = 0,
-    this.replies = const [],
-    this.isExpanded = true,
-  });
+  @override
+  State<CommentScreen> createState() => _CommentScreenState();
 }
 
-// --- Main Comment Screen Widget ---
-class CommentScreen extends StatelessWidget {
-  const CommentScreen({super.key});
+class _CommentScreenState extends State<CommentScreen> {
+  // 3. Add state variables for the BottomNavbar
+  int _selectedTab = 0; // Set initial index, e.g., 0 for home
+
+  void _onCenterButtonPressed() {
+    // Add your logic for the center button, e.g., show a create post screen
+    print("Center button pressed on Comment Screen!");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,12 +52,10 @@ class CommentScreen extends StatelessWidget {
                   timestamp: '11 Sep',
                   upvotes: 40,
                 ),
-              ]
-          ),
+              ]),
         ],
       ),
     ];
-
 
     return Scaffold(
       backgroundColor: const Color(0xFF2C2F33), // Dark theme background
@@ -80,7 +70,9 @@ class CommentScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.search, color: Colors.white),
-            onPressed: () { /* Search functionality */ },
+            onPressed: () {
+              /* Search functionality */
+            },
           ),
         ],
       ),
@@ -102,8 +94,16 @@ class CommentScreen extends StatelessWidget {
           _AddCommentInput(),
         ],
       ),
-      // You can uncomment this once your bottom_navbar is ready
-      // bottomNavigationBar: YourBottomNavbarWidget(),
+      // 4. Connect the state variables and callbacks to the BottomNavbar
+      bottomNavigationBar: CustomBottomNavbar(
+        selectedIndex: _selectedTab,
+        onTabSelected: (index) {
+          setState(() {
+            _selectedTab = index;
+          });
+        },
+        onCenterButtonPressed: _onCenterButtonPressed,
+      ),
     );
   }
 }
@@ -137,7 +137,8 @@ class _PostWidget extends StatelessWidget {
             OutlinedButton(
               onPressed: () {},
               style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.white, side: const BorderSide(color: Colors.grey),
+                foregroundColor: Colors.white,
+                side: const BorderSide(color: Colors.grey),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
               ),
               child: const Text('Follow'),
@@ -149,11 +150,13 @@ class _PostWidget extends StatelessWidget {
         const SizedBox(height: 10),
         Wrap(
           spacing: 8.0,
-          children: (post['tags'] as List<String>).map((tag) => Chip(
+          children: (post['tags'] as List<String>)
+              .map((tag) => Chip(
             label: Text(tag, style: const TextStyle(color: Colors.white)),
             backgroundColor: Colors.grey.shade700,
             padding: EdgeInsets.zero,
-          )).toList(),
+          ))
+              .toList(),
         ),
         const SizedBox(height: 15),
         Row(
@@ -190,6 +193,26 @@ class _PostWidget extends StatelessWidget {
   }
 }
 
+// --- Mock Data Model ---
+class Comment {
+  final String author;
+  final String avatarUrl;
+  final String text;
+  final String timestamp;
+  final int upvotes;
+  final List<Comment> replies;
+  bool isExpanded;
+
+  Comment({
+    required this.author,
+    required this.avatarUrl,
+    required this.text,
+    required this.timestamp,
+    this.upvotes = 0,
+    this.replies = const [],
+    this.isExpanded = true,
+  });
+}
 
 // --- Reusable Widget for a Comment and its Replies (Thread) ---
 class CommentThread extends StatefulWidget {
@@ -362,7 +385,6 @@ class _CommentBody extends StatelessWidget {
   }
 }
 
-
 // --- Painter for the vertical thread line ---
 class _ThreadLinePainter extends CustomPainter {
   @override
@@ -371,8 +393,7 @@ class _ThreadLinePainter extends CustomPainter {
       ..color = Colors.grey.shade700
       ..strokeWidth = 1.5;
     // Draws a vertical line from top-center to bottom-center
-    canvas.drawLine(
-        Offset(size.width / 2, 0), Offset(size.width / 2, size.height), paint);
+    canvas.drawLine(Offset(size.width / 2, 0), Offset(size.width / 2, size.height), paint);
   }
 
   @override
@@ -408,7 +429,9 @@ class _AddCommentInput extends StatelessWidget {
                 contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.send, color: Colors.white),
-                  onPressed: () { /* Send comment */ },
+                  onPressed: () {
+                    /* Send comment */
+                  },
                 ),
               ),
             ),

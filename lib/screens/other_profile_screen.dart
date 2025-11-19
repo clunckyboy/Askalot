@@ -1,11 +1,25 @@
 import 'package:flutter/material.dart';
+import '../widgets/bottom_navbar.dart';
 
-class OtherProfileScreen extends StatelessWidget {
-  // In a real app, you would pass a userId and fetch the user's data.
-  // For this example, we'll pass the data directly.
-  const OtherProfileScreen({super.key});
+// 1. Convert to a StatefulWidget
+class OtherProfileScreen extends StatefulWidget {const OtherProfileScreen({super.key});
 
-  // Helper method to build reusable action buttons
+@override
+State<OtherProfileScreen> createState() => _OtherProfileScreenState();
+}
+
+class _OtherProfileScreenState extends State<OtherProfileScreen> {
+  // 2. Add state variables for the BottomNavbar
+  int _selectedTab = 3; // Set initial index, e.g., 3 for the account/profile tab
+
+  // 3. Add the function for the center button press
+  void _onCenterButtonPressed() {
+    // Add your logic for the center button, e.g., show a create post screen
+    print("Center button pressed on Other Profile Screen!");
+  }
+
+  // --- Helper Methods (Moved inside the State class) ---
+
   Widget _buildActionButton(String text, VoidCallback onPressed, {bool isPrimary = false}) {
     return Expanded(
       child: Padding(
@@ -32,7 +46,6 @@ class OtherProfileScreen extends StatelessWidget {
     );
   }
 
-  // Helper method for category labels like "Profile" and "Account"
   Widget _buildInfoLabel(String text) {
     return Text(
       text,
@@ -44,7 +57,6 @@ class OtherProfileScreen extends StatelessWidget {
     );
   }
 
-  // Helper method for displaying the user's information values
   Widget _buildInfoValue(String text, {bool isBio = false}) {
     return Padding(
       padding: const EdgeInsets.only(top: 4.0),
@@ -59,7 +71,6 @@ class OtherProfileScreen extends StatelessWidget {
     );
   }
 
-  // Helper method to create interest chips
   Widget _buildInterestChip(String interest) {
     return Chip(
       label: Text(interest, style: const TextStyle(color: Colors.white)),
@@ -72,11 +83,10 @@ class OtherProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // --- MOCK DATA ---
-    // This data would be fetched based on a userId
     const String username = "larrymustard";
     const String bio = "Screw my sad chud life";
     const List<String> interests = ["plants", "cactus", "gardening"];
-    const String profileImageUrl = "https://cdn-icons-png.flaticon.com/512/147/147144.png"; // Placeholder
+    const String profileImageUrl = "https://cdn-icons-png.flaticon.com/512/1154/1154448.png"; // Placeholder for larrymustard
 
     return Scaffold(
       backgroundColor: const Color(0xFF1A1A1B),
@@ -159,6 +169,16 @@ class OtherProfileScreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
+      // 4. Connect the state variables and callbacks to the BottomNavbar
+      bottomNavigationBar: CustomBottomNavbar(
+        selectedIndex: _selectedTab,
+        onTabSelected: (index) {
+          // Use setState to rebuild the widget with the new tab index
+          setState(() => _selectedTab = index);
+          // You can add navigation logic here if needed
+        },
+        onCenterButtonPressed: _onCenterButtonPressed,
       ),
     );
   }
