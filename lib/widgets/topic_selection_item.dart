@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 // Definisi warna (konsisten dengan screen sebelumnya)
-const Color kPrimaryColor = Color(0xFF9596FF); // Ungu
+const Color kPrimaryColor = Color(0xFF7A6BFF); // Ungu
 const Color kSecondaryColor = Color(0xFF3D425B); // Latar belakang list item
 
 /// Widget kustom untuk menampilkan satu item topik yang dapat dipilih.

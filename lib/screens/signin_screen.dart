@@ -73,13 +73,6 @@ class SignInScreen extends StatelessWidget {
 
               // Tombol Sign in
               ElevatedButton(
-                onPressed: () {
-                  // Logika untuk sign in
-                },
-                child: Text(
-                  'Sign in',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).primaryColor,
                   foregroundColor: Colors.white,
@@ -88,7 +81,15 @@ class SignInScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
+                onPressed: () {
+                  // Logika untuk sign in
+                },
+                child: Text(
+                  'Sign in',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
               ),
+
               SizedBox(height: 325),
 
               // Link ke halaman sign up
@@ -112,7 +113,9 @@ class SignInScreen extends StatelessWidget {
                   ],
                 ),
               ),
+
               SizedBox(height: 20),
+
             ],
           ),
         ),

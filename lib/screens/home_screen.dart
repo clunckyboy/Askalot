@@ -30,23 +30,26 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = const Color(0xFF1E1E2C);
+    // final bgColor = const Color(0xFF1E1E2C);
     final cardColor = const Color(0xFF2C2C3A);
     final accent = const Color(0xFF7B7FFF);
 
     return Scaffold(
-      backgroundColor: bgColor,
       appBar: AppBar(
-        backgroundColor: bgColor,
-        elevation: 0,
+        backgroundColor: Color(0xFF2B2D35),
+        elevation: 1,
         title: const Text(
           "Home",
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
         ),
-        actions: const [
+        actions: [
           Padding(
-            padding: EdgeInsets.only(right: 16.0),
-            child: Icon(Icons.search, size: 28),
+            padding: EdgeInsets.only(right: 13.0),
+            child: IconButton(
+              icon: Icon(Icons.search),
+              iconSize: 28,
+              onPressed: (){},
+            ),
           ),
         ],
       ),
@@ -54,39 +57,41 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 🔹 Filter Tabs
-          SizedBox(
-            height: 45,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              itemCount: filters.length,
-              itemBuilder: (context, index) {
-                final isSelected = selectedFilter == index;
-                return Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: ChoiceChip(
-                    selected: isSelected,
-                    label: Text(filters[index]),
-                    selectedColor: accent,
-                    onSelected: (_) {
-                      setState(() => selectedFilter = index);
-                    },
-                    labelStyle: TextStyle(
-                      color: isSelected ? Colors.white : Colors.white70,
-                      fontWeight:
-                      isSelected ? FontWeight.bold : FontWeight.normal,
+          Padding(
+            padding: const EdgeInsets.only(top: 5.0),
+            child: SizedBox(
+              height: 45,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                itemCount: filters.length,
+                itemBuilder: (context, index) {
+                  final isSelected = selectedFilter == index;
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: ChoiceChip(
+                      selected: isSelected,
+                      label: Text(filters[index]),
+                      selectedColor: accent,
+                      onSelected: (_) {
+                        setState(() => selectedFilter = index);
+                      },
+                      labelStyle: TextStyle(
+                        color: isSelected ? Colors.white : Colors.white70,
+                        fontWeight:
+                        isSelected ? FontWeight.bold : FontWeight.normal,
+                      ),
+                      backgroundColor: cardColor,
                     ),
-                    backgroundColor: cardColor,
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
 
           const SizedBox(height: 10),
 
-          // 🔹 Posts List
+          // Posts
           Expanded(
             child: ListView(
               padding: const EdgeInsets.all(10),
@@ -101,29 +106,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   upvotes: 67,
                   downvotes: 0,
                   comments: 5,
-                ),
-                _buildPostCard(
-                  context,
-                  username: "larrymustard",
-                  date: "5 Aug",
-                  avatar: "https://i.pravatar.cc/100?img=2",
-                  content: "Hello I’m larry",
-                  upvotes: 100,
-                  downvotes: 9000,
-                  comments: 666,
-                ),
-                _buildPostCard(
-                  context,
-                  username: "MyMotherAteFries",
-                  date: "12 Sep",
-                  avatar: "https://i.pravatar.cc/100?img=3",
-                  content:
-                  "Is there a way to delete this block in Blender? I’ve spent 5 days trying to figure this out",
-                  image:
-                  "https://upload.wikimedia.org/wikipedia/commons/3/3a/Blender_3.0_interface_screenshot.png",
-                  upvotes: 100,
-                  downvotes: 0,
-                  comments: 42,
                 ),
               ],
             ),

@@ -28,12 +28,12 @@ class MyApp extends StatelessWidget {
         appBarTheme: AppBarTheme(
           surfaceTintColor: Color(0xFF2B2D35),
         ),
-        scaffoldBackgroundColor: Color(0xFF23232F),
+        scaffoldBackgroundColor: Color(0xFF2B2D35),
         primaryColor: Color(0xFF7A6BFF),
         hintColor: Colors.grey[400],
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
-          fillColor: Color(0xFF2C2C3E),
+          fillColor: Color(0xFF2B2D35),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12.0),
             borderSide: BorderSide(color: Color(0xFF7A6BFF)),
@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: CommentScreen(),
+      home: HomeScreen(),
     );
   }
 }
