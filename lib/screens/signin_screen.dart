@@ -1,8 +1,86 @@
+import 'package:askalot/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class SignInScreen extends StatelessWidget {
+import 'home_screen.dart';
+
+class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
+
+  @override
+  State<SignInScreen> createState() => _SignInScreenState();
+}
+
+class _SignInScreenState extends State<SignInScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  bool _isLoading = false;
+
+  Future<void> _signIn() async {
+    final email  = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    if(email.isEmpty || password.isEmpty){
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Email dan Password harus diisi")),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final supabase = Supabase.instance.client;
+
+      final List<dynamic> response = await supabase
+        .from('users')
+        .select()
+        .eq('email', email)
+        .eq('password', password);
+
+      if (response.isNotEmpty) {
+        if(mounted){
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+          );
+        }
+      } else {
+        if(mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Email atau password salah"),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if(mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Terjadi kesalahan: $e')),
+        );
+      }
+    } finally {
+      if(mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  @override
+  void dispose(){
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +95,7 @@ class SignInScreen extends StatelessWidget {
               SizedBox(height: 40),
 
               // Logo Aplikasi
-              
+
               Image.asset(
                 'assets/images/askalot.png',
                 // width: 90,
@@ -46,6 +124,7 @@ class SignInScreen extends StatelessWidget {
               ),
               SizedBox(height: 8),
               TextField(
+                controller: _emailController,
                 decoration: InputDecoration(
                   hintText: 'Enter your email',
                   hintStyle: TextStyle(color: Colors.grey[600]),
@@ -62,6 +141,7 @@ class SignInScreen extends StatelessWidget {
               ),
               SizedBox(height: 8),
               TextField(
+                controller: _passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
                   hintText: 'Enter your password',
@@ -81,13 +161,20 @@ class SignInScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                onPressed: () {
-                  // Logika untuk sign in
-                },
-                child: Text(
-                  'Sign in',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+                onPressed: _isLoading ? null : _signIn,
+                child: _isLoading
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                  )
+                  : const Text(
+                      'Sign in',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
               ),
 
               SizedBox(height: 325),
@@ -108,6 +195,7 @@ class SignInScreen extends StatelessWidget {
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
                           print('Navigate to sign up');
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => SignupScreen()));
                         },
                     ),
                   ],

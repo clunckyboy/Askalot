@@ -12,7 +12,17 @@ import 'package:askalot/screens/splash_screen.dart';
 import 'package:askalot/screens/signup_screen.dart';
 import 'package:askalot/screens/splash_screen.dart';
 
-void main() {
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+void main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(
+      url: 'https://vxjwjyycklgdxdeyqoax.supabase.co',
+      anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ4andqeXlja2xnZHhkZXlxb2F4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1NDMwOTUsImV4cCI6MjA3OTExOTA5NX0.lhcZl2DaLYlqu-lipVvaDIVG2UPVgrNrtz8vRRhxR-w'
+  );
+
   runApp(const MyApp());
 }
 
@@ -44,7 +54,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: HomeScreen(),
+      home: SplashScreen(),
     );
   }
 }
