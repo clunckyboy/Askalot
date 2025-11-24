@@ -1,6 +1,7 @@
 import 'package:askalot/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'home_screen.dart';
@@ -44,10 +45,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
       if (response.isNotEmpty) {
         if(mounted){
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
-          );
+          context.go('/home'); // Masuk ke ShellRoute
         }
       } else {
         if(mounted) {

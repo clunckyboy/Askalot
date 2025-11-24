@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 
 class SignupScreen extends StatefulWidget {
@@ -39,7 +40,11 @@ class _SignupScreenState extends State<SignupScreen> {
       } else if (_passwordController.text != _confirmPasswordController.text) {
         _errorMessage = "password tidak sama";
       } else {
-        print("Logika Signup");
+        GoRouter.of(context).push('/interests', extra: {
+          'username': _usernameController.text.trim(),
+          'email': _emailController.text.trim(),
+          'password': _passwordController.text.trim(),
+        });
       }
     });
   }
@@ -104,7 +109,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 child: IconButton(
                   icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
                   onPressed: () {
-                    // Logika kembali ke halaman sebelumnya
+                    context.pop();
                   },
                 ),
               ),

@@ -113,15 +113,15 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
 
-      // 🔹 Reusable Bottom Navbar
-      bottomNavigationBar: CustomBottomNavbar(
-        selectedIndex: _selectedTab,
-        onTabSelected: (index) {
-          setState(() => _selectedTab = index);
-          // You can navigate to other screens here if needed
-        },
-        onCenterButtonPressed: _onCenterButtonPressed,
-      ),
+      // // 🔹 Reusable Bottom Navbar
+      // bottomNavigationBar: CustomBottomNavbar(
+      //   selectedIndex: _selectedTab,
+      //   onTabSelected: (index) {
+      //     setState(() => _selectedTab = index);
+      //     // You can navigate to other screens here if needed
+      //   },
+      //   onCenterButtonPressed: _onCenterButtonPressed,
+      // ),
     );
   }
 

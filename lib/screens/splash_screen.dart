@@ -1,5 +1,6 @@
 import 'package:askalot/screens/signin_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'dart:async';
 import 'home_screen.dart';
 
@@ -20,23 +21,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void _navigateNextScreen() async {
     await Future.delayed(Duration(milliseconds: 1500), (){});
-
-    Navigator.pushReplacement(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-          SignInScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(
-              opacity: animation,
-              child: child,
-            );
-          },
-          transitionDuration: Duration(milliseconds: 500),
-
-
-      )
-    );
+    if(mounted) {
+      context.go('/signin'); // Menggunakan GoRouter
+    }
   }
 
   @override

@@ -235,13 +235,13 @@ class _AccountScreenState extends State<AccountScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: CustomBottomNavbar(
-          selectedIndex: _selectedIndex,
-          onTabSelected: (index) {
-            setState(() => _selectedIndex = index);
-          },
-          onCenterButtonPressed: _onCenterButtonPressed,
-      ),
+      // bottomNavigationBar: CustomBottomNavbar(
+      //     selectedIndex: _selectedIndex,
+      //     onTabSelected: (index) {
+      //       setState(() => _selectedIndex = index);
+      //     },
+      //     onCenterButtonPressed: _onCenterButtonPressed,
+      // ),
     );
   }
 }
