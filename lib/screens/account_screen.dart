@@ -76,8 +76,6 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 
   void _onCenterButtonPressed() {
-    // Logika saat tombol '+' ditekan
-    print('Tombol Tengah Ditekan!');
     // Misalnya, tampilkan dialog, bottom sheet, atau navigasi ke layar baru
     showModalBottomSheet(
       context: context,
@@ -94,10 +92,8 @@ class _AccountScreenState extends State<AccountScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new),
-          onPressed: (){},
-        ),
+        surfaceTintColor: Colors.transparent,
+        backgroundColor: Color(0xFF2C2C3E),
         title: Text(
           'Account',
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -235,13 +231,6 @@ class _AccountScreenState extends State<AccountScreen> {
           ),
         ),
       ),
-      // bottomNavigationBar: CustomBottomNavbar(
-      //     selectedIndex: _selectedIndex,
-      //     onTabSelected: (index) {
-      //       setState(() => _selectedIndex = index);
-      //     },
-      //     onCenterButtonPressed: _onCenterButtonPressed,
-      // ),
     );
   }
 }

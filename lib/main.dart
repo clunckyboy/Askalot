@@ -38,6 +38,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark().copyWith(
         appBarTheme: AppBarTheme(
           surfaceTintColor: Color(0xFF2B2D35),
+          scrolledUnderElevation: 0,
         ),
         scaffoldBackgroundColor: Color(0xFF2B2D35),
         primaryColor: Color(0xFF7A6BFF),

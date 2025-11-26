@@ -36,7 +36,7 @@ class CustomBottomNavbar extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-// Item 0: Home - menggunakan Expanded agar sama lebar
+            // Item 0: Home - menggunakan Expanded agar sama lebar
             Expanded(
               child: _navItem(Icons.home_filled, "Home", 0),
             ),
@@ -84,52 +84,87 @@ class CustomBottomNavbar extends StatelessWidget {
   Widget _navItem(IconData icon, String label, int index) {
     final bool isSelected = selectedIndex == index;
 
-    // Tampilan untuk item TIDAK AKTIF
-    Widget inactiveItem = Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 28, color: inactiveColor),
-        const SizedBox(height: 3),
-        Text(
-          label,
-          style: TextStyle(
-            color: inactiveColor,
-            fontSize: 13,
-          ),
-        ),
-      ],
-    );
-
-    // Tampilan untuk item AKTIF (dengan pil)
-    Widget activeItem = Container(
-      // padding: EdgeInsets.symmetric(horizontal: 10),
-      height: 60,
-      decoration: BoxDecoration(
-        color: activePillColor,
-        borderRadius: BorderRadius.circular(50), // Bentuk pil
-      ),
+    // Animasi sederhana untuk item aktif/tidak aktif
+    return GestureDetector(
+      onTap: () => onTabSelected(index),
+      behavior: HitTestBehavior.opaque,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        // mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 28, color: activeColor),
-          const SizedBox(height: 3),
+          // Container Pil hanya muncul jika Selected
+          Container(
+            width: 70,
+            height: 35,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: isSelected ? activePillColor : Colors.transparent,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Icon(
+              icon,
+              size: 26,
+              color: isSelected ? activeColor : inactiveColor,
+            ),
+          ),
+          const SizedBox(height: 4),
           Text(
             label,
             style: TextStyle(
-              color: activeColor,
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
+              color: isSelected ? activeColor : inactiveColor,
+              fontSize: 12,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
             ),
           ),
         ],
       ),
     );
 
-    return GestureDetector(
-      onTap: () => onTabSelected(index),
-      behavior: HitTestBehavior.opaque, // Pastikan area transparan bisa di-tap
-      child: isSelected ? activeItem : inactiveItem,
-    );
+    // // Tampilan untuk item TIDAK AKTIF
+    // Widget inactiveItem = Column(
+    //   mainAxisSize: MainAxisSize.min,
+    //   children: [
+    //     Icon(icon, size: 28, color: inactiveColor),
+    //     const SizedBox(height: 3),
+    //     Text(
+    //       label,
+    //       style: TextStyle(
+    //         color: inactiveColor,
+    //         fontSize: 13,
+    //       ),
+    //     ),
+    //   ],
+    // );
+    //
+    // // Tampilan untuk item AKTIF (dengan pil)
+    // Widget activeItem = Container(
+    //   // padding: EdgeInsets.symmetric(horizontal: 10),
+    //   height: 60,
+    //   decoration: BoxDecoration(
+    //     color: activePillColor,
+    //     borderRadius: BorderRadius.circular(50), // Bentuk pil
+    //   ),
+    //   child: Column(
+    //     mainAxisAlignment: MainAxisAlignment.center,
+    //     // mainAxisSize: MainAxisSize.min,
+    //     children: [
+    //       Icon(icon, size: 28, color: activeColor),
+    //       const SizedBox(height: 3),
+    //       Text(
+    //         label,
+    //         style: TextStyle(
+    //           color: activeColor,
+    //           fontSize: 13,
+    //           fontWeight: FontWeight.w600,
+    //         ),
+    //       ),
+    //     ],
+    //   ),
+    // );
+    //
+    // return GestureDetector(
+    //   onTap: () => onTabSelected(index),
+    //   behavior: HitTestBehavior.opaque, // Pastikan area transparan bisa di-tap
+    //   child: isSelected ? activeItem : inactiveItem,
+    // );
   }
 }

@@ -1,23 +1,25 @@
-class Thread {
-  final int thread_id;
-  final int user_id;
-  final String thread_content;
-  final String? media_url;
-  final String? media_type;
-  final DateTime created_at;
-  final int thread_upvote;
-  final int thread_downvote;
-  final int reply_count;
+class ThreadModel {
+  final String threadId;
+  final String userId;
+  final String username;
+  final String userAvatar;
+  final String threadContent;
+  final String? mediaUrl;
+  final String createdAt;
+  final int threadUpvote;
+  final int threadDownvote;
+  final int replyCount;
 
-  Thread({
-    required this.thread_id,
-    required this.user_id,
-    required this.thread_content,
-    this.media_type,
-    this.media_url,
-    required this.created_at,
-    required this.thread_upvote,
-    required this.thread_downvote,
-    required this.reply_count,
+  ThreadModel({
+    required this.threadId,
+    required this.userId,
+    required this.username,
+    required this.userAvatar,
+    required this.threadContent,
+    this.mediaUrl,
+    required this.createdAt,
+    required this.threadUpvote,
+    required this.threadDownvote,
+    required this.replyCount,
   });
 }

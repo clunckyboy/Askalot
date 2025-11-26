@@ -23,10 +23,12 @@ final GoRouter router = GoRouter(
       path: '/signin',
       builder: (context, state) => const SignInScreen(),
     ),
+
     GoRoute(
       path: '/signup',
       builder: (context, state) => const SignupScreen(),
     ),
+
     GoRoute(
       path: '/interests',
       builder: (context, state) {
@@ -34,6 +36,11 @@ final GoRouter router = GoRouter(
         final userData = state.extra as Map<String, dynamic>;
         return InterestScreen(userData: userData);
       },
+    ),
+
+    GoRoute(
+      path: '/post',
+      builder: (context, state) => const PostingScreen(),
     ),
 
     // 3. Main App Flow (Dengan Bottom Navbar)
@@ -52,16 +59,7 @@ final GoRouter router = GoRouter(
             ),
           ],
         ),
-        // Tab 1: Posting (Tombol Tengah)
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/post',
-              builder: (context, state) => const PostingScreen(),
-            ),
-          ],
-        ),
-        // Tab 2: Account
+        // Tab 1: Account
         StatefulShellBranch(
           routes: [
             GoRoute(

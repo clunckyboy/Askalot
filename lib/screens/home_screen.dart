@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:askalot/widgets/bottom_navbar.dart'; // Import your reusable navbar
+import '../models/thread_model.dart'; // Import model
+import '../widgets/thread_card.dart'; // Import widget
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -9,34 +10,45 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedTab = 0;
   final List<String> filters = ["Recently", "Hot", "Low Vote", "Oldest"];
   int selectedFilter = 0;
 
-  void _onCenterButtonPressed() {
-    // Logika saat tombol '+' ditekan
-    print('Tombol Tengah Ditekan!');
-    // Misalnya, tampilkan dialog, bottom sheet, atau navigasi ke layar baru
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => Container(
-        height: 200,
-        child: const Center(
-          child: Text('Buka Halaman Baru'),
-        ),
-      ),
-    );
-  }
+  final List<ThreadModel> posts = [
+    ThreadModel(
+      threadId: "1",
+      userId: "u001",
+      username: "BlueElectric05",
+      userAvatar: "https://i.pravatar.cc/100?img=1",
+      threadContent: "My cactus wouldn’t stop yelling at me, what should I do?",
+      mediaUrl: "https://picsum.photos/seed/picsum/400/200", // Contoh gambar
+      createdAt: "11 Sep 2025 - 16:14",
+      threadUpvote: 67,
+      threadDownvote: 0,
+      replyCount: 5,
+    ),
+    ThreadModel(
+      threadId: "2",
+      userId: "u002",
+      username: "TechGuy99",
+      userAvatar: "https://i.pravatar.cc/100?img=12",
+      threadContent: "Flutter is amazing but state management is confusing!",
+      mediaUrl: null, // Contoh tanpa gambar
+      createdAt: "11 Sep 2025 - 18:00",
+      threadUpvote: 120,
+      threadDownvote: 2,
+      replyCount: 45,
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    // final bgColor = const Color(0xFF1E1E2C);
     final cardColor = const Color(0xFF2C2C3A);
     final accent = const Color(0xFF7B7FFF);
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF2B2D35),
+        centerTitle: true,
+        backgroundColor: Color(0xFF2C2C3E),
         elevation: 1,
         title: const Text(
           "Home",
@@ -92,42 +104,48 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 10),
 
           // Posts
+          // --- LOGIKA UTAMA POST LIST ---
           Expanded(
-            child: ListView(
+            child: posts.isEmpty
+            // Kondisi 1: Jika Kosong
+                ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.inbox_rounded, size: 80, color: Colors.grey[700]),
+                  const SizedBox(height: 16),
+                  Text(
+                    "No posts yet",
+                    style: TextStyle(
+                      color: Colors.grey[400],
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            )
+            // Kondisi 2: Jika Ada Data
+                : ListView.builder(
               padding: const EdgeInsets.all(10),
-              children: [
-                _buildPostCard(
-                  context,
-                  username: "BlueElectric05",
-                  date: "11 Sep 2025 - 16:14",
-                  avatar: "https://i.pravatar.cc/100?img=1",
-                  content:
-                  "My cactus wouldn’t stop yelling at me, what should I do?",
-                  upvotes: 67,
-                  downvotes: 0,
-                  comments: 5,
-                ),
-              ],
+              itemCount: posts.length,
+              itemBuilder: (context, index) {
+                final post = posts[index];
+                return ThreadCard(
+                  thread: post,
+                  onFollowPressed: () {
+                    print("Follow user: ${post.userId}");
+                  },
+                );
+              },
             ),
           ),
         ],
       ),
 
-      // // 🔹 Reusable Bottom Navbar
-      // bottomNavigationBar: CustomBottomNavbar(
-      //   selectedIndex: _selectedTab,
-      //   onTabSelected: (index) {
-      //     setState(() => _selectedTab = index);
-      //     // You can navigate to other screens here if needed
-      //   },
-      //   onCenterButtonPressed: _onCenterButtonPressed,
-      // ),
     );
   }
 
-  // ────────────────────────────────────────────────
-  // 🔸 Post Card Builder
-  // ────────────────────────────────────────────────
   Widget _buildPostCard(
       BuildContext context, {
         required String username,

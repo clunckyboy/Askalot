@@ -24,13 +24,10 @@ class ScaffoldWithNavBar extends StatelessWidget {
       bottomNavigationBar: CustomBottomNavbar(
         selectedIndex: navigationShell.currentIndex,
         onTabSelected: (index) {
-          // Navigasi untuk Home (0) dan Account (1 di logika navbar kamu, tapi 2 di router branch)
-          // Kita perlu mapping karena tombol tengah kamu unik
-          if (index == 0) _goBranch(0); // Home
-          if (index == 1) _goBranch(2); // Account (Branch ke-3)
+          _goBranch(index);
         },
         onCenterButtonPressed: () {
-          _goBranch(1); // Posting (Branch ke-2)
+          context.push('/post');
         },
       ),
     );

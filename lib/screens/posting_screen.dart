@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class PostingScreen extends StatelessWidget {
   const PostingScreen({super.key});
@@ -10,7 +11,9 @@ class PostingScreen extends StatelessWidget {
         backgroundColor: Color(0xFF2C2C3E),
         centerTitle: true,
         leading: IconButton(
-          onPressed: (){},
+          onPressed: (){
+            context.pop();
+          },
           padding: EdgeInsets.zero,
           icon: Icon(Icons.arrow_back_ios_new),
         ),
