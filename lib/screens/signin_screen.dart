@@ -37,25 +37,49 @@ class _SignInScreenState extends State<SignInScreen> {
     try {
       final supabase = Supabase.instance.client;
 
-      final List<dynamic> response = await supabase
-        .from('users')
-        .select()
-        .eq('email', email)
-        .eq('password', password);
+      // final List<dynamic> response = await supabase
+      //   .from('users')
+      //   .select()
+      //   .eq('email', email)
+      //   .eq('password', password);
 
-      if (response.isNotEmpty) {
-        if(mounted){
-          context.go('/home'); // Masuk ke ShellRoute
+      // supabase auth
+      final AuthResponse res = await supabase.auth.signInWithPassword(
+        email: email,
+        password: password,
+      );
+
+      // Jika tidak error, berarti login sukses & session tersimpan
+      if (res.user != null) {
+        if (mounted) {
+          // Navigasi ke Home
+          context.go('/home');
         }
-      } else {
-        if(mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text("Email atau password salah"),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
+      }
+
+      // if (response.isNotEmpty) {
+      //   if(mounted){
+      //     context.go('/home'); // Masuk ke ShellRoute
+      //   }
+      // } else {
+      //   if(mounted) {
+      //     ScaffoldMessenger.of(context).showSnackBar(
+      //       SnackBar(
+      //         content: Text("Email atau password salah"),
+      //         backgroundColor: Colors.red,
+      //       ),
+      //     );
+      //   }
+      // }
+    } on AuthException catch (e) {
+      // Menangkap error khusus Auth (password salah, user tidak ditemukan, dll)
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.message), // Pesan error bawaan Supabase
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     } catch (e) {
       if(mounted) {

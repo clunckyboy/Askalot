@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/thread_model.dart'; // Import model
 import '../widgets/thread_card.dart'; // Import widget
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,32 +14,42 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<String> filters = ["Recently", "Hot", "Low Vote", "Oldest"];
   int selectedFilter = 0;
 
-  final List<ThreadModel> posts = [
-    ThreadModel(
-      threadId: "1",
-      userId: "u001",
-      username: "BlueElectric05",
-      userAvatar: "https://i.pravatar.cc/100?img=1",
-      threadContent: "My cactus wouldn’t stop yelling at me, what should I do?",
-      mediaUrl: "https://picsum.photos/seed/picsum/400/200", // Contoh gambar
-      createdAt: "11 Sep 2025 - 16:14",
-      threadUpvote: 67,
-      threadDownvote: 0,
-      replyCount: 5,
-    ),
-    ThreadModel(
-      threadId: "2",
-      userId: "u002",
-      username: "TechGuy99",
-      userAvatar: "https://i.pravatar.cc/100?img=12",
-      threadContent: "Flutter is amazing but state management is confusing!",
-      mediaUrl: null, // Contoh tanpa gambar
-      createdAt: "11 Sep 2025 - 18:00",
-      threadUpvote: 120,
-      threadDownvote: 2,
-      replyCount: 45,
-    ),
-  ];
+  List<ThreadModel> posts = [];
+  bool _isLoading = true;
+
+  Future<void> _fetchThreads() async {
+    try {
+      final supabase = Supabase.instance.client;
+
+      // Query dengan JOIN ke tabel users
+      // Syntax: table_utama!inner(kolom) atau users(username, profile_pic)
+      final response = await supabase
+          .from('threads')
+          .select('*, users(username, profile_pic)')
+          .order('created_at', ascending: false); // Urutkan dari terbaru
+
+      final List<dynamic> data = response as List<dynamic>;
+
+      setState(() {
+        posts = data.map((json) => ThreadModel.fromJson(json)).toList();
+        _isLoading = false;
+      });
+    } catch (e) {
+      print("Error fetching threads: $e");
+      if (mounted) {
+        setState(() => _isLoading = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Gagal memuat data: $e')),
+        );
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchThreads();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,39 +117,41 @@ class _HomeScreenState extends State<HomeScreen> {
           // Posts
           // --- LOGIKA UTAMA POST LIST ---
           Expanded(
-            child: posts.isEmpty
+            child: _isLoading
             // Kondisi 1: Jika Kosong
+              ? const Center(child: CircularProgressIndicator())
+              : posts.isEmpty
                 ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.inbox_rounded, size: 80, color: Colors.grey[700]),
-                  const SizedBox(height: 16),
-                  Text(
-                    "No posts yet",
-                    style: TextStyle(
-                      color: Colors.grey[400],
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                    ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.inbox_rounded, size: 80, color: Colors.grey[700]),
+                      const SizedBox(height: 16),
+                      Text(
+                        "No posts yet",
+                        style: TextStyle(
+                          color: Colors.grey[400],
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            )
+                )
             // Kondisi 2: Jika Ada Data
                 : ListView.builder(
-              padding: const EdgeInsets.all(10),
-              itemCount: posts.length,
-              itemBuilder: (context, index) {
-                final post = posts[index];
-                return ThreadCard(
-                  thread: post,
-                  onFollowPressed: () {
-                    print("Follow user: ${post.userId}");
+                  padding: const EdgeInsets.all(10),
+                  itemCount: posts.length,
+                  itemBuilder: (context, index) {
+                    final post = posts[index];
+                    return ThreadCard(
+                      thread: post,
+                      onFollowPressed: () {
+                        print("Follow user: ${post.userId}");
+                      },
+                    );
                   },
-                );
-              },
-            ),
+                ),
           ),
         ],
       ),

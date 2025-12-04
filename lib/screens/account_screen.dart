@@ -1,5 +1,7 @@
 import 'package:askalot/screens/interests_screen.dart';
 import 'package:askalot/widgets/bottom_navbar.dart';
+import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/material.dart';
 
 class AccountScreen extends StatefulWidget {
@@ -11,7 +13,109 @@ class AccountScreen extends StatefulWidget {
 
 class _AccountScreenState extends State<AccountScreen> {
 
-  int _selectedIndex = 0;
+  bool _isLoading = true;
+  String _username = '';
+  String _email = '';
+  String _bio = '';
+  String _avatarPath = '';
+  List<String> _interests = [];
+
+  Future<void> _fetchUserProfile() async {
+
+    await Future.delayed(Duration.zero);
+
+    try {
+      final supabase = Supabase.instance.client;
+      final user = supabase.auth.currentUser;
+
+      if (user == null) {
+        // Jika tidak ada user login, kembalikan ke login screen
+        if (mounted) context.go('/signin');
+        return;
+      }
+
+      // Ambil data dari tabel 'users' berdasarkan ID user yang login
+      final response = await supabase
+          .from('users')
+          .select()
+          .eq('user_id', user.id)
+          .single(); // .single() karena kita yakin hanya ada 1 data per ID
+
+      if (mounted) {
+        setState(() {
+          _username = response['username'] ?? 'User';
+          _email = response['email'] ?? user.email ?? '';
+          _bio = response['bio'] ?? '';
+
+          // Handling Avatar Path
+          _avatarPath = response['profile_pic'] ?? '';
+
+          if (response['fav_topics'] != null) {
+            _interests = List<String>.from(response['fav_topics']);
+          }
+
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Error fetching profile: $e');
+      if (mounted) {
+        setState(() => _isLoading = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Gagal memuat profil: $e')),
+        );
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserProfile();
+  }
+
+  // 2. Fungsi Logout
+  Future<void> _handleLogout() async {
+    try {
+      await Supabase.instance.client.auth.signOut();
+      if (mounted) {
+        context.go('/signin'); // Kembali ke halaman login menggunakan GoRouter
+      }
+    } catch (e) {
+      if(mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Gagal logout: $e')),
+        );
+      }
+    }
+  }
+
+  // 3. Helper Avatar: Mengubah Path Storage menjadi URL Publik
+  String _getPublicUrl(String path) {
+    try {
+      // GANTI 'avatars' SESUAI NAMA BUCKET ANDA (misal: 'profile_pic' atau 'avatars')
+      return Supabase.instance.client.storage.from('profile_pic').getPublicUrl(path);
+    } catch (e) {
+      return path;
+    }
+  }
+
+  // 4. Helper Avatar Provider: Menentukan ImageProvider (Network vs Asset)
+  ImageProvider _getAvatarProvider() {
+    // A. Jika path kosong -> Pakai Asset Default
+    if (_avatarPath.isEmpty) {
+      return const AssetImage('assets/images/askalot.png');
+    }
+
+    // B. Jika path diawali http (misal login Google) -> Pakai Network
+    if (_avatarPath.startsWith('http')) {
+      return NetworkImage(_avatarPath);
+    }
+
+    // C. Jika path Storage Supabase (misal "folder/img.jpg") -> Generate URL lalu Network
+    final publicUrl = _getPublicUrl(_avatarPath);
+    return NetworkImage(publicUrl);
+  }
 
   Widget _buildInfoLabel(String label) {
     return Text(
@@ -75,19 +179,6 @@ class _AccountScreenState extends State<AccountScreen> {
     );
   }
 
-  void _onCenterButtonPressed() {
-    // Misalnya, tampilkan dialog, bottom sheet, atau navigasi ke layar baru
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => Container(
-        height: 200,
-        child: const Center(
-          child: Text('Buka Halaman Baru'),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,9 +191,11 @@ class _AccountScreenState extends State<AccountScreen> {
         ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(24),
+          padding: const EdgeInsets.all(24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -110,21 +203,24 @@ class _AccountScreenState extends State<AccountScreen> {
               Center(
                 child: Column(
                   children: [
-                    const CircleAvatar(
+                    CircleAvatar(
                       radius: 50,
-                      backgroundImage: AssetImage('assets/images/askalot.png'),
+                      backgroundImage: _getAvatarProvider(), // Panggil fungsi dinamis
+                      onBackgroundImageError: (_,__) {
+                        // Fallback jika network error (opsional)
+                      },
                     ),
                     const SizedBox(height: 16,),
-                    const Text(
-                      'BlueElectric05',
-                      style: TextStyle(
+                    Text(
+                      _username, // Data Dinamis
+                      style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 4,),
                     Text(
-                      'negus69@gmail.com',
+                      _email, // Data Dinamis
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey[400],
@@ -150,26 +246,21 @@ class _AccountScreenState extends State<AccountScreen> {
               const SizedBox(height: 20,),
 
               _buildInfoValue('Bio'),
-
               const SizedBox(height: 8),
-
-              _buildInfoValue('Nerdy Hedgehog who draws for a living'),
+              _buildInfoValue(_bio), // Data Dinamis
 
               const SizedBox(height: 24),
 
               _buildInfoLabel('Interest'),
-
               const SizedBox(height: 12,),
 
-              Wrap(
+              // Interests Dinamis
+              _interests.isEmpty
+                  ? Text("-", style: TextStyle(color: Colors.grey[400]))
+                  : Wrap(
                 spacing: 8.0,
                 runSpacing: 8.0,
-                children: [
-                  _buildInterestChip('Computer Science'),
-                  _buildInterestChip('Food'),
-                  _buildInterestChip('Art'),
-                  _buildInterestChip('Garden'),
-                ],
+                children: _interests.map((topic) => _buildInterestChip(topic)).toList(),
               ),
 
               const SizedBox(height: 40,),
@@ -188,26 +279,20 @@ class _AccountScreenState extends State<AccountScreen> {
               const SizedBox(height: 20,),
 
               _buildInfoLabel('Email'),
-
               const SizedBox(height: 8,),
-
-              _buildInfoValue('negus69@gmail.com'),
+              _buildInfoValue(_email), // Data Dinamis
 
               const SizedBox(height: 24,),
 
               _buildInfoLabel('Username'),
-
               const SizedBox(height: 8,),
-
-              _buildInfoValue('BlueElectric05'),
+              _buildInfoValue(_username), // Data Dinamis
 
               const SizedBox(height: 24,),
 
               _buildInfoLabel('Password'),
-
               const SizedBox(height: 28,),
-
-              _buildInfoValue('**************'),
+              _buildInfoValue('**************'), // Password tidak ditampilkan demi keamanan
 
               const SizedBox(height: 40,),
 
@@ -216,7 +301,9 @@ class _AccountScreenState extends State<AccountScreen> {
                 text: 'Edit',
                 icon: Icons.edit,
                 color: Colors.white,
-                onPressed: (){},
+                onPressed: (){
+                  // Navigasi ke Edit Screen (perlu dibuat terpisah)
+                },
               ),
 
               const SizedBox(height: 12,),
@@ -225,7 +312,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 text: 'Logout',
                 icon: Icons.logout,
                 color: Colors.red[400]!,
-                onPressed: () {},
+                onPressed: _handleLogout, // Panggil fungsi Logout
               ),
             ],
           ),

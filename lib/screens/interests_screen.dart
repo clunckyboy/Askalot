@@ -25,8 +25,8 @@ class _InterestScreenState extends State<InterestScreen> {
     'Computer Science': false,
     'Politics': false,
     'Food': false,
-    'Topic Example 1': false,
-    'Topic Example 2': false,
+    'Game': false,
+    'Movies': false,
   };
 
   bool _isSubmitting = false;

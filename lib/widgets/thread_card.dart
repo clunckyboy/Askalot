@@ -11,6 +11,15 @@ class ThreadCard extends StatelessWidget {
     this.onFollowPressed,
   });
 
+  // Menentukan Image Provider (Network vs Asset)
+  ImageProvider _getAvatarProvider(String avatarPath) {
+    if (avatarPath.startsWith('http')) {
+      return NetworkImage(avatarPath);
+    } else {
+      return AssetImage(avatarPath);
+    }
+  }
+
   Widget _reaction(IconData icon, String count, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -47,8 +56,11 @@ class ThreadCard extends StatelessWidget {
           Row(
             children: [
               CircleAvatar(
-                backgroundImage: AssetImage('assets/images/askalot.png'),
-                radius: 18,
+                backgroundImage: _getAvatarProvider(thread.userAvatar),
+                radius: 21,
+                onBackgroundImageError: (exception, stackTrace) {
+                  // Fallback jika network error (optional)
+                },
               ),
               const SizedBox(width: 8,),
               Expanded(
@@ -89,13 +101,14 @@ class ThreadCard extends StatelessWidget {
 
           SizedBox(height: 10,),
 
-          // Media Check (Jika ada gambar)
+          // Media Check
           if (thread.mediaUrl != null && thread.mediaUrl!.isNotEmpty) ...[
             const SizedBox(height: 10),
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: Image.network(
                 thread.mediaUrl!,
+                fit: BoxFit.cover,
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress == null) return child;
                   return const Center(child: CircularProgressIndicator());
@@ -106,12 +119,14 @@ class ThreadCard extends StatelessWidget {
             ),
           ],
 
-          SizedBox(height: 5,),
+          SizedBox(height: 13,),
 
           Text(
             thread.threadContent,
             style: TextStyle(color: Colors.white, fontSize: 16),
           ),
+
+          SizedBox(height: 13,),
 
           Row(
             children: [
