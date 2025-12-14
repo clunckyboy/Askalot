@@ -120,38 +120,55 @@ class _HomeScreenState extends State<HomeScreen> {
             child: _isLoading
             // Kondisi 1: Jika Kosong
               ? const Center(child: CircularProgressIndicator())
-              : posts.isEmpty
-                ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.inbox_rounded, size: 80, color: Colors.grey[700]),
-                      const SizedBox(height: 16),
-                      Text(
-                        "No posts yet",
-                        style: TextStyle(
-                          color: Colors.grey[400],
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                        ),
+              : RefreshIndicator(
+                  onRefresh: _fetchThreads,
+                  color: accent,
+                  backgroundColor: cardColor,
+                  child: posts.isEmpty
+                      ? ListView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          children: [
+                            SizedBox(
+                              // Agar konten berada di tengah layar secara vertikal
+                              height: MediaQuery.of(context).size.height * 0.3,
+                            ),
+                            Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.inbox_rounded, size: 80, color: Colors.grey[700]),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    "No posts yet",
+                                    style: TextStyle(
+                                      color: Colors.grey[400],
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        )
+                      // Kondisi 2: Jika Ada Data
+                      : ListView.builder(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: const EdgeInsets.all(10),
+                        itemCount: posts.length,
+                        itemBuilder: (context, index) {
+                          final post = posts[index];
+                          return ThreadCard(
+                            thread: post,
+                            onFollowPressed: () {
+                              print("Follow user: ${post.userId}");
+                            },
+                          );
+                        },
                       ),
-                    ],
-                  ),
-                )
-            // Kondisi 2: Jika Ada Data
-                : ListView.builder(
-                  padding: const EdgeInsets.all(10),
-                  itemCount: posts.length,
-                  itemBuilder: (context, index) {
-                    final post = posts[index];
-                    return ThreadCard(
-                      thread: post,
-                      onFollowPressed: () {
-                        print("Follow user: ${post.userId}");
-                      },
-                    );
-                  },
-                ),
+              ),
+
+
           ),
         ],
       ),

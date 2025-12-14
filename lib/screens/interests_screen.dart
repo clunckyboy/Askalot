@@ -37,32 +37,48 @@ class _InterestScreenState extends State<InterestScreen> {
     try {
       final supabase = Supabase.instance.client;
 
-      // Ambil topik yang dipilih
-      final selectedTopics = topics.keys.where((k) => topics[k] == true).toList();
+      final AuthResponse res = await supabase.auth.signUp(
+        email: widget.userData['email'],
+        password: widget.userData['password'],
+        data: {'username': widget.userData['username']},
+      );
 
-      // Gabungkan data user (dari Sign up) + data interest
-      final dataToInsert = {
-        'username': widget.userData['username'],
-        'email': widget.userData['email'],
-        'password': widget.userData['password'],
-        'fav_topics': selectedTopics, // Pastikan kolom di DB tipe array/jsonb
-      };
+      final User? user = res.user;
 
-      // Insert ke table 'users'
-      await supabase.from('users').insert(dataToInsert);
+      if(user != null){
+        final selectedTopics = topics.keys.where((k) => topics[k] == true).toList();
 
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Akun berhasil dibuat! Silakan Login.")),
-        );
-        // Arahkan ke Login
-        context.go('/signin');
+        final dataToInsert = {
+          'user_id': user.id,
+          'username': widget.userData['username'],
+          'email': widget.userData['email'],
+          'password': widget.userData['password'],
+          'fav_topics': selectedTopics,
+        };
+
+        await supabase.from('users').insert(dataToInsert);
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Akun berhasil dibuat! Silakan Login.")),
+          );
+          // Arahkan ke Login
+          context.go('/signin');
+        }
       }
-
-    } catch (e) {
+    } on AuthException catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Gagal membuat akun: $e")),
+          SnackBar(
+            content: Text("Gagal Sign Up: ${e.message}"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      if(mounted){
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Terjadi kesalahan: $e"),),
         );
       }
     } finally {
