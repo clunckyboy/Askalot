@@ -9,6 +9,8 @@ import 'package:askalot/widgets/scaffold_with_navbar.dart'; // Kita akan buat in
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 
+import '../screens/edit_account_screen.dart';
+
 final GoRouter router = GoRouter(
   initialLocation: '/',
   routes: [
@@ -41,6 +43,13 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/post',
       builder: (context, state) => const PostingScreen(),
+    ),
+
+    GoRoute(
+      path: '/edit-account',
+      builder: (context, state) {
+        return const EditAccountScreen();
+      },
     ),
 
     // 3. Main App Flow (Dengan Bottom Navbar)

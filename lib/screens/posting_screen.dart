@@ -289,19 +289,7 @@ class _PostingScreenState extends State<PostingScreen> {
 
                   SizedBox(height: 15),
 
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: Color(0xFF7A6BFF),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      'Add tags',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
                 ],
-                // crossAxisAlignment: CrossAxisAlignment.start,
               ),
             ),
 
@@ -309,14 +297,10 @@ class _PostingScreenState extends State<PostingScreen> {
 
             ListTile(
               onTap: _pickImage,
-              leading: Icon(Icons.photo, size: 40,),
+              leading: Icon(Icons.photo, size: 35,),
               title: Text('Photo'),
             ),
 
-            ListTile(
-              leading: Icon(Icons.gif_outlined, size: 40,),
-              title: Text('GIF'),
-            ),
           ],
         ),
       ),

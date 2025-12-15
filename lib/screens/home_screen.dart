@@ -11,7 +11,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final List<String> filters = ["Recently", "Hot", "Low Vote", "Oldest"];
+  final List<String> filters = [
+    "Recently",
+    "Oldest",
+    "Highest Upvote",
+    "Lowest Upvote",
+    "Highest Downvote",
+    "Lowest Downvote"
+  ];
   int selectedFilter = 0;
 
   List<ThreadModel> posts = [];
@@ -20,20 +27,101 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _fetchThreads() async {
     try {
       final supabase = Supabase.instance.client;
+      final user = supabase.auth.currentUser;
 
-      // Query dengan JOIN ke tabel users
-      // Syntax: table_utama!inner(kolom) atau users(username, profile_pic)
+      String sortColumn = 'created_at';
+      bool isAscending = false;
+
+      switch(selectedFilter) {
+        case 0: // Recently
+          sortColumn = 'created_at';
+          isAscending = false;
+          break;
+        case 1: // Oldest
+          sortColumn = 'created_at';
+          isAscending = true;
+          break;
+        case 2: // Highest upvote
+          sortColumn = 'thread_upvote';
+          isAscending = false;
+          break;
+        case 3: // Lowest upvote
+          sortColumn = 'thread_upvote';
+          isAscending = true;
+          break;
+        case 4: // Highest downvote
+          sortColumn = 'thread_downvote';
+          isAscending = false;
+          break;
+        case 5: // Lowest downvote
+          sortColumn = 'thread_downvote';
+          isAscending = true;
+          break;
+        default:
+          sortColumn = 'created_at';
+          isAscending = false;
+      }
+
       final response = await supabase
           .from('threads')
           .select('*, users(username, profile_pic)')
-          .order('created_at', ascending: false); // Urutkan dari terbaru
+          .order(sortColumn, ascending: isAscending);
 
-      final List<dynamic> data = response as List<dynamic>;
+      List<ThreadModel> loadedPosts = (response as List).map((json) => ThreadModel.fromJson(json)).toList();
 
-      setState(() {
-        posts = data.map((json) => ThreadModel.fromJson(json)).toList();
-        _isLoading = false;
-      });
+      // 3. Ambil Data Vote User (Jika user sedang login)
+      if (user != null && loadedPosts.isNotEmpty) {
+        final threadIds = loadedPosts.map((e) => e.id).toList();
+
+        // Ambil vote user khusus untuk thread-thread yang diload
+        final votesResponse = await supabase
+            .from('thread_votes')
+            .select('thread_id, vote_type')
+            .eq('user_id', user.id)
+            .inFilter('thread_id', threadIds);
+
+        final Map<int, int> votesMap = {};
+
+        // Map vote ke thread
+        // final votesMap = {
+        //   for (var v in (votesResponse as List))
+        //     (v['thread_id'] as num).toInt(): (v['vote_type'] as num?)?.toInt() ?? 0
+        // };
+
+        for (var v in (votesResponse as List)) {
+          // Ambil data dengan aman
+          final tId = v['thread_id'];
+          final vType = v['vote_type'];
+
+          // Konversi manual agar aman dari null
+          int safeThreadId = 0;
+          if (tId is int) safeThreadId = tId;
+          else if (tId is num) safeThreadId = tId.toInt();
+
+          int safeVoteType = 0;
+          if (vType is int) safeVoteType = vType;
+          else if (vType is num) safeVoteType = vType.toInt();
+
+          votesMap[safeThreadId] = safeVoteType;
+        }
+
+        // Update list post dengan status vote
+        loadedPosts = loadedPosts.map((post) {
+          if (votesMap.containsKey(post.id)) {
+            return post.copyWith(userVote: votesMap[post.id]);
+          }
+          return post;
+        }).toList();
+      }
+
+      // final List<dynamic> data = response as List<dynamic>;
+
+      if(mounted){
+        setState(() {
+          posts = loadedPosts;
+          _isLoading = false;
+        });
+      }
     } catch (e) {
       print("Error fetching threads: $e");
       if (mounted) {
@@ -42,6 +130,62 @@ class _HomeScreenState extends State<HomeScreen> {
           SnackBar(content: Text('Gagal memuat data: $e')),
         );
       }
+    }
+  }
+
+  // --- FUNGSI BARU: HANDLE VOTE ---
+  Future<void> _handleVote(ThreadModel post, int voteType) async {
+    final supabase = Supabase.instance.client;
+    final user = supabase.auth.currentUser;
+
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Login untuk voting")));
+      return;
+    }
+
+    // 1. Hitung Logika Optimistic Update (Biar UI instan berubah)
+    int newUpvotes = post.upvotes;
+    int newDownvotes = post.downvotes;
+    int newUserVote = voteType;
+
+    if (post.userVote == voteType) {
+      // Toggle OFF (Sudah vote ini, diklik lagi -> Batal)
+      newUserVote = 0;
+      if (voteType == 1) newUpvotes--;
+      else newDownvotes--;
+    } else {
+      // Vote Baru atau Ganti Vote
+      if (voteType == 1) {
+        newUpvotes++;
+        if (post.userVote == -1) newDownvotes--; // Kalau sebelumnya down, kurangi down
+      } else {
+        newDownvotes++;
+        if (post.userVote == 1) newUpvotes--; // Kalau sebelumnya up, kurangi up
+      }
+    }
+
+    // 2. Update UI Lokal
+    setState(() {
+      final index = posts.indexWhere((p) => p.id == post.id);
+      if (index != -1) {
+        posts[index] = post.copyWith(
+          upvotes: newUpvotes,
+          downvotes: newDownvotes,
+          userVote: newUserVote,
+        );
+      }
+    });
+
+    // 3. Kirim ke Supabase (Panggil RPC)
+    try {
+      await supabase.rpc('handle_vote', params: {
+        'p_thread_id': post.id,
+        'p_vote_type': voteType,
+      });
+    } catch (e) {
+      print("Gagal vote: $e");
+      // Revert UI jika gagal (Opsional: panggil _fetchThreads lagi)
+      _fetchThreads();
     }
   }
 
@@ -96,8 +240,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       selected: isSelected,
                       label: Text(filters[index]),
                       selectedColor: accent,
-                      onSelected: (_) {
-                        setState(() => selectedFilter = index);
+                      onSelected: (selected) {
+                        setState(() {
+                          selectedFilter = index;
+                          _isLoading = true;
+                        });
+                        _fetchThreads();
                       },
                       labelStyle: TextStyle(
                         color: isSelected ? Colors.white : Colors.white70,
@@ -115,7 +263,6 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 10),
 
           // Posts
-          // --- LOGIKA UTAMA POST LIST ---
           Expanded(
             child: _isLoading
             // Kondisi 1: Jika Kosong
@@ -153,18 +300,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         )
                       // Kondisi 2: Jika Ada Data
                       : ListView.builder(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        padding: const EdgeInsets.all(10),
-                        itemCount: posts.length,
-                        itemBuilder: (context, index) {
-                          final post = posts[index];
-                          return ThreadCard(
-                            thread: post,
-                            onFollowPressed: () {
-                              print("Follow user: ${post.userId}");
-                            },
-                          );
-                        },
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          padding: const EdgeInsets.all(10),
+                          itemCount: posts.length,
+                          itemBuilder: (context, index) {
+                            final post = posts[index];
+                            return ThreadCard(
+                              thread: post,
+                              onFollowPressed: () {
+                                print("Follow user: ${post.userId}");
+                              },
+                              onVote: (voteType) => _handleVote(post, voteType),
+                            );
+                          },
                       ),
               ),
 

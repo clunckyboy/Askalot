@@ -5,10 +5,13 @@ class ThreadCard extends StatelessWidget {
   final ThreadModel thread;
   final VoidCallback? onFollowPressed;
 
+  final Function(int voteType) onVote;
+
   const ThreadCard({
     super.key,
     required this.thread,
     this.onFollowPressed,
+    required this.onVote
   });
 
   // Menentukan Image Provider (Network vs Asset)
@@ -41,7 +44,10 @@ class ThreadCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cardColor = const Color(0xFF2C2C3A);
-    final accent = const Color(0xFF7B7FFF);
+    // final accent = const Color(0xFF7B7FFF);
+
+    final Color upvoteColor = thread.userVote == 1 ? Color(0xFF7B7FFF) : Colors.white70;
+    final Color downvoteColor = thread.userVote == -1 ? Colors.redAccent : Colors.white70;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
@@ -130,10 +136,20 @@ class ThreadCard extends StatelessWidget {
 
           Row(
             children: [
-              _reaction(Icons.arrow_upward, thread.threadUpvote.toString(), accent),
+              InkWell(
+                onTap: () => onVote(1),
+                child: _reaction(Icons.arrow_upward, thread.upvotes.toString(), upvoteColor),
+              ),
+
               const SizedBox(width: 8),
-              _reaction(Icons.arrow_downward, thread.threadDownvote.toString(), Colors.red),
+
+              InkWell(
+                onTap: () => onVote(-1),
+                child: _reaction(Icons.arrow_downward, thread.downvotes.toString(), downvoteColor),
+              ),
+
               const SizedBox(width: 8),
+
               _reaction(Icons.comment, thread.replyCount.toString(), Colors.white70),
             ],
           )

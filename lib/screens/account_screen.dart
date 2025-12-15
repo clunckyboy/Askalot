@@ -204,7 +204,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 child: Column(
                   children: [
                     CircleAvatar(
-                      radius: 50,
+                      radius: 90,
                       backgroundImage: _getAvatarProvider(), // Panggil fungsi dinamis
                       onBackgroundImageError: (_,__) {
                         // Fallback jika network error (opsional)
@@ -301,8 +301,13 @@ class _AccountScreenState extends State<AccountScreen> {
                 text: 'Edit',
                 icon: Icons.edit,
                 color: Colors.white,
-                onPressed: (){
-                  // Navigasi ke Edit Screen (perlu dibuat terpisah)
+                onPressed: () async {
+
+                  final bool? result  = await context.push<bool>('/edit-account');
+
+                  if(result == true){
+                    _fetchUserProfile();
+                  }
                 },
               ),
 
