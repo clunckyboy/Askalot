@@ -7,11 +7,16 @@ class ThreadCard extends StatelessWidget {
 
   final Function(int voteType) onVote;
 
+  final VoidCallback onCommentPressed;
+  final VoidCallback onProfilePressed;
+
   const ThreadCard({
     super.key,
     required this.thread,
     this.onFollowPressed,
-    required this.onVote
+    required this.onVote,
+    required this.onCommentPressed,
+    required this.onProfilePressed,
   });
 
   // Menentukan Image Provider (Network vs Asset)
@@ -44,7 +49,6 @@ class ThreadCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cardColor = const Color(0xFF2C2C3A);
-    // final accent = const Color(0xFF7B7FFF);
 
     final Color upvoteColor = thread.userVote == 1 ? Color(0xFF7B7FFF) : Colors.white70;
     final Color downvoteColor = thread.userVote == -1 ? Colors.redAccent : Colors.white70;
@@ -59,50 +63,53 @@ class ThreadCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              CircleAvatar(
-                backgroundImage: _getAvatarProvider(thread.userAvatar),
-                radius: 21,
-                onBackgroundImageError: (exception, stackTrace) {
-                  // Fallback jika network error (optional)
-                },
-              ),
-              const SizedBox(width: 8,),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      thread.username,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    Text(
-                      thread.createdAt,
-                      style: TextStyle(
-                        color: Colors.white54,
-                        fontSize: 12,
-                      ),
-                    )
-                  ],
+          GestureDetector(
+            onTap: onProfilePressed,
+            child: Row(
+              children: [
+                CircleAvatar(
+                  backgroundImage: _getAvatarProvider(thread.userAvatar),
+                  radius: 21,
+                  onBackgroundImageError: (exception, stackTrace) {
+                    // Fallback jika network error (optional)
+                  },
                 ),
-              ),
-              OutlinedButton(
-                onPressed: onFollowPressed ?? (){},
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  side: BorderSide(color: Colors.white30),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
+                const SizedBox(width: 8,),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        thread.username,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Text(
+                        thread.createdAt,
+                        style: TextStyle(
+                          color: Colors.white54,
+                          fontSize: 12,
+                        ),
+                      )
+                    ],
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 ),
-                child: Text("Follow"),
-              )
-            ],
+                OutlinedButton(
+                  onPressed: onFollowPressed ?? (){},
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    side: BorderSide(color: Colors.white30),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  ),
+                  child: Text("Follow"),
+                )
+              ],
+            ),
           ),
 
           SizedBox(height: 10,),
@@ -127,9 +134,12 @@ class ThreadCard extends StatelessWidget {
 
           SizedBox(height: 13,),
 
-          Text(
-            thread.threadContent,
-            style: TextStyle(color: Colors.white, fontSize: 16),
+          GestureDetector(
+            onTap: onCommentPressed,
+            child: Text(
+              thread.threadContent,
+              style: TextStyle(color: Colors.white, fontSize: 16),
+            ),
           ),
 
           SizedBox(height: 13,),
@@ -150,7 +160,10 @@ class ThreadCard extends StatelessWidget {
 
               const SizedBox(width: 8),
 
-              _reaction(Icons.comment, thread.replyCount.toString(), Colors.white70),
+              InkWell(
+                onTap: onCommentPressed, // Panggil callback saat icon ditekan
+                child: _reaction(Icons.comment, thread.replyCount.toString(), Colors.white70),
+              ),
             ],
           )
         ],

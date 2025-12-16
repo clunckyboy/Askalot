@@ -1,6 +1,7 @@
 import 'package:askalot/screens/account_screen.dart';
 import 'package:askalot/screens/home_screen.dart';
 import 'package:askalot/screens/interests_screen.dart';
+import 'package:askalot/screens/other_profile_screen.dart';
 import 'package:askalot/screens/posting_screen.dart';
 import 'package:askalot/screens/signin_screen.dart';
 import 'package:askalot/screens/signup_screen.dart';
@@ -9,6 +10,8 @@ import 'package:askalot/widgets/scaffold_with_navbar.dart'; // Kita akan buat in
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 
+import '../models/thread_model.dart';
+import '../screens/comment_section_screen.dart';
 import '../screens/edit_account_screen.dart';
 
 final GoRouter router = GoRouter(
@@ -50,6 +53,16 @@ final GoRouter router = GoRouter(
       builder: (context, state) {
         return const EditAccountScreen();
       },
+    ),
+
+  GoRoute(
+    path: '/comments',
+    builder: (context, state) => CommentScreen(thread: state.extra as ThreadModel),
+  ),
+
+    GoRoute(
+      path: '/other-profile',
+      builder: (context, state) => OtherProfileScreen(threadData: state.extra as ThreadModel),
     ),
 
     // 3. Main App Flow (Dengan Bottom Navbar)

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../models/thread_model.dart'; // Import model
 import '../widgets/thread_card.dart'; // Import widget
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -311,11 +312,22 @@ class _HomeScreenState extends State<HomeScreen> {
                                 print("Follow user: ${post.userId}");
                               },
                               onVote: (voteType) => _handleVote(post, voteType),
+                              onCommentPressed: (){
+                                context.push('/comments', extra: post);
+                              },
+                              onProfilePressed: (){
+                                final currentUserId = Supabase.instance.client.auth.currentUser?.id;
+
+                                if(currentUserId == post.userId){
+                                  context.go('/account');
+                                } else {
+                                  context.push('/other-profile', extra: post);
+                                }
+                              },
                             );
                           },
                       ),
               ),
-
 
           ),
         ],

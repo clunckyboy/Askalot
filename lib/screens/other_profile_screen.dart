@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
 import '../widgets/bottom_navbar.dart';
+import '../models/thread_model.dart';
 
-// 1. Convert to a StatefulWidget
-class OtherProfileScreen extends StatefulWidget {const OtherProfileScreen({super.key});
+class OtherProfileScreen extends StatefulWidget {
+  final ThreadModel threadData;
 
-@override
-State<OtherProfileScreen> createState() => _OtherProfileScreenState();
+  const OtherProfileScreen({super.key, required this.threadData});
+
+  @override
+  State<OtherProfileScreen> createState() => _OtherProfileScreenState();
 }
 
 class _OtherProfileScreenState extends State<OtherProfileScreen> {
-  // 2. Add state variables for the BottomNavbar
-  int _selectedTab = 3; // Set initial index, e.g., 3 for the account/profile tab
+  int _selectedTab = 3;
 
-  // 3. Add the function for the center button press
   void _onCenterButtonPressed() {
-    // Add your logic for the center button, e.g., show a create post screen
     print("Center button pressed on Other Profile Screen!");
   }
 
-  // --- Helper Methods (Moved inside the State class) ---
+  ImageProvider _getAvatarProvider(String avatarPath){
+    if(avatarPath.startsWith('http')) return NetworkImage(avatarPath);
+    return AssetImage(avatarPath);
+  }
 
   Widget _buildActionButton(String text, VoidCallback onPressed, {bool isPrimary = false}) {
     return Expanded(
@@ -82,14 +85,14 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // --- MOCK DATA ---
-    const String username = "larrymustard";
-    const String bio = "Screw my sad chud life";
-    const List<String> interests = ["plants", "cactus", "gardening"];
-    const String profileImageUrl = "https://cdn-icons-png.flaticon.com/512/1154/1154448.png"; // Placeholder for larrymustard
+
+    final String username = widget.threadData.username;
+    final String profileImageUrl = widget.threadData.userAvatar;
+    const String bio = "user's bio";
+    const List<String> interests = ["Loading..."];
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1B),
+      backgroundColor: const Color(0xFF2B2D35),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -99,8 +102,8 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
             Navigator.of(context).pop();
           },
         ),
-        title: const Text(
-          "Profile",
+        title: Text(
+          username,
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
@@ -110,13 +113,12 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              // --- Top Profile Section ---
               Center(
                 child: Column(
                   children: [
-                    const CircleAvatar(
+                    CircleAvatar(
                       radius: 50,
-                      backgroundImage: NetworkImage(profileImageUrl),
+                      backgroundImage: _getAvatarProvider(profileImageUrl),
                       backgroundColor: Colors.grey,
                     ),
                     const SizedBox(height: 16),
@@ -133,18 +135,12 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
               ),
               const SizedBox(height: 24),
 
-              // --- Action Button ("Follow") ---
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   _buildActionButton("Follow", () {
-                    // Handle follow logic
                     print("Follow button pressed");
                   }, isPrimary: true),
-                  _buildActionButton("Message", () {
-                    // Handle message logic
-                    print("Message button pressed");
-                  }),
                 ],
               ),
               const SizedBox(height: 30),
@@ -169,16 +165,6 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
             ],
           ),
         ),
-      ),
-      // 4. Connect the state variables and callbacks to the BottomNavbar
-      bottomNavigationBar: CustomBottomNavbar(
-        selectedIndex: _selectedTab,
-        onTabSelected: (index) {
-          // Use setState to rebuild the widget with the new tab index
-          setState(() => _selectedTab = index);
-          // You can add navigation logic here if needed
-        },
-        onCenterButtonPressed: _onCenterButtonPressed,
       ),
     );
   }
