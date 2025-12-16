@@ -1,5 +1,3 @@
-// lib/models/reply_model.dart
-
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ReplyModel {
@@ -25,7 +23,7 @@ class ReplyModel {
     required this.replyDownvote,
   });
 
-  // Helper untuk mengubah tipe data aman
+  // Helper untuk mengubah tipe data agar aman
   static int _toInt(dynamic value) {
     if (value == null) return 0;
     if (value is int) return value;
@@ -34,7 +32,7 @@ class ReplyModel {
     return 0;
   }
 
-  // Helper Avatar (Sama seperti ThreadModel)
+  // Helper Avatar
   static String _getStorageUrl(String bucketName, String path) {
     try {
       return Supabase.instance.client.storage.from(bucketName).getPublicUrl(path);
@@ -47,13 +45,13 @@ class ReplyModel {
   static String _formatDate(String dateStr) {
     try {
       final date = DateTime.parse(dateStr).toLocal();
-      // Format sederhana: DD/MM HH:MM
       return "${date.day}/${date.month} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}";
     } catch (e) {
       return dateStr;
     }
   }
 
+  // Blueprint untuk model reply/comment
   factory ReplyModel.fromJson(Map<String, dynamic> json) {
     final userData = json['users'];
 

@@ -76,7 +76,6 @@ class _SignupScreenState extends State<SignupScreen> {
           style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-            // filled: true,
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: const BorderSide(color: Color(0xFFD9D9D9), width: 1),
@@ -116,7 +115,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
               const SizedBox(height: 20),
 
-              // GAMBAR LOGO
+              // Logo
               Center(
                 child: Image.asset(
                   'assets/images/askalot.png',

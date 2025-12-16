@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 
-// Definisi warna (konsisten dengan screen sebelumnya)
-const Color kPrimaryColor = Color(0xFF7A6BFF); // Ungu
-const Color kSecondaryColor = Color(0xFF3D425B); // Latar belakang list item
+const Color kPrimaryColor = Color(0xFF7A6BFF);
+const Color kSecondaryColor = Color(0xFF3D425B);
 
-/// Widget kustom untuk menampilkan satu item topik yang dapat dipilih.
-/// Widget ini bersifat StatelessWidget, status terpilihnya diatur oleh parent.
 class TopicSelectionItem extends StatelessWidget {
   final String title;
   final bool isSelected;

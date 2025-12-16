@@ -6,10 +6,8 @@ import 'package:askalot/screens/posting_screen.dart';
 import 'package:askalot/screens/signin_screen.dart';
 import 'package:askalot/screens/signup_screen.dart';
 import 'package:askalot/screens/splash_screen.dart';
-import 'package:askalot/widgets/scaffold_with_navbar.dart'; // Kita akan buat ini di langkah 3
+import 'package:askalot/widgets/scaffold_with_navbar.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter/material.dart';
-
 import '../models/thread_model.dart';
 import '../screens/comment_section_screen.dart';
 import '../screens/edit_account_screen.dart';
@@ -17,23 +15,26 @@ import '../screens/edit_account_screen.dart';
 final GoRouter router = GoRouter(
   initialLocation: '/',
   routes: [
-    // 1. Splash Screen
+
+    // Splash Screen
     GoRoute(
       path: '/',
       builder: (context, state) => const SplashScreen(),
     ),
 
-    // 2. Auth Flow
+    // Sign in
     GoRoute(
       path: '/signin',
       builder: (context, state) => const SignInScreen(),
     ),
 
+    // Sign up
     GoRoute(
       path: '/signup',
       builder: (context, state) => const SignupScreen(),
     ),
 
+    // Interests page
     GoRoute(
       path: '/interests',
       builder: (context, state) {
@@ -43,11 +44,13 @@ final GoRouter router = GoRouter(
       },
     ),
 
+    // Post page
     GoRoute(
       path: '/post',
       builder: (context, state) => const PostingScreen(),
     ),
 
+    // Edit account page
     GoRoute(
       path: '/edit-account',
       builder: (context, state) {
@@ -55,24 +58,26 @@ final GoRouter router = GoRouter(
       },
     ),
 
-  GoRoute(
-    path: '/comments',
-    builder: (context, state) => CommentScreen(thread: state.extra as ThreadModel),
-  ),
+    // Comment page
+    GoRoute(
+      path: '/comments',
+      builder: (context, state) => CommentScreen(thread: state.extra as ThreadModel),
+    ),
 
+    // Other user profile
     GoRoute(
       path: '/other-profile',
       builder: (context, state) => OtherProfileScreen(threadData: state.extra as ThreadModel),
     ),
 
-    // 3. Main App Flow (Dengan Bottom Navbar)
+    // Main App Flow (Bottom Navbar)
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
         // Widget wrapper yang berisi BottomNavbar
         return ScaffoldWithNavBar(navigationShell: navigationShell);
       },
       branches: [
-        // Tab 0: Home
+        // Home bar
         StatefulShellBranch(
           routes: [
             GoRoute(
@@ -81,7 +86,7 @@ final GoRouter router = GoRouter(
             ),
           ],
         ),
-        // Tab 1: Account
+        // Account bar
         StatefulShellBranch(
           routes: [
             GoRoute(

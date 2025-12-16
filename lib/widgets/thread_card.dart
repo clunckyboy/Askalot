@@ -70,9 +70,6 @@ class ThreadCard extends StatelessWidget {
                 CircleAvatar(
                   backgroundImage: _getAvatarProvider(thread.userAvatar),
                   radius: 21,
-                  onBackgroundImageError: (exception, stackTrace) {
-                    // Fallback jika network error (optional)
-                  },
                 ),
                 const SizedBox(width: 8,),
                 Expanded(

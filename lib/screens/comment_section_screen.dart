@@ -83,8 +83,6 @@ class _CommentScreenState extends State<CommentScreen> {
       // Refresh list komentar
       _fetchComments();
 
-      // Opsional: Update reply count di tabel threads (bisa pakai RPC atau trigger di DB)
-
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Gagal kirim komentar: $e")));
     }
@@ -96,7 +94,7 @@ class _CommentScreenState extends State<CommentScreen> {
       color: const Color(0xFF23272A),
       child: Row(
         children: [
-          // Avatar user yang sedang login (Bisa diambil dari Supabase auth metadata atau fetch profile)
+          // Avatar user yang sedang login
           const CircleAvatar(
             backgroundColor: Colors.grey,
             child: Icon(Icons.person, color: Colors.white),
@@ -139,7 +137,7 @@ class _CommentScreenState extends State<CommentScreen> {
 
     return Scaffold(
 
-      backgroundColor: const Color(0xFF2B2D35), // Dark theme background
+      backgroundColor: const Color(0xFF2B2D35),
 
       appBar: AppBar(
         backgroundColor: const Color(0xFF2C2F33),
@@ -237,16 +235,22 @@ class _PostWidget extends StatelessWidget {
         ),
 
         const SizedBox(height: 15),
-        Text(thread.threadContent,
-            style: const TextStyle(color: Colors.white, fontSize: 16)),
+
+        Text(
+          thread.threadContent,
+          style: const TextStyle(color: Colors.white, fontSize: 16)
+        ),
 
         if (thread.mediaUrl != null) ...[
           const SizedBox(height: 10),
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: Image.network(thread.mediaUrl!, height: 200,
-                width: double.infinity,
-                fit: BoxFit.cover),
+            child: Image.network(
+              thread.mediaUrl!,
+              height: 200,
+              width: double.infinity,
+              fit: BoxFit.cover
+            ),
           )
         ],
       ],

@@ -27,16 +27,14 @@ class CustomBottomNavbar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomAppBar(
       color: backgroundColor,
-      // Hapus 'shape' dan 'notchMargin' karena barnya datar
       elevation: 12,
       shadowColor: Colors.black,
       child: Padding(
-        // Padding disesuaikan agar pas
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Item 0: Home - menggunakan Expanded agar sama lebar
+            // Item 0: Home
             Expanded(
               child: _navItem(Icons.home_filled, "Home", 0),
             ),
@@ -64,16 +62,16 @@ class CustomBottomNavbar extends StatelessWidget {
   // Widget untuk tombol '+' di tengah
   Widget _buildCenterButton() {
     return SizedBox(
-      width: 90, // Atur lebar
-      height: 60, // Atur tinggi
+      width: 90,
+      height: 60,
       child: ElevatedButton(
         onPressed: onCenterButtonPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: centerButtonColor,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16), // Rounded corner
+            borderRadius: BorderRadius.circular(16),
           ),
-          padding: EdgeInsets.zero, // Hapus padding default
+          padding: EdgeInsets.zero,
         ),
         child: Icon(Icons.add, color: activeColor, size: 30),
       ),
@@ -91,7 +89,6 @@ class CustomBottomNavbar extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Container Pil hanya muncul jika Selected
           Container(
             width: 70,
             height: 35,
@@ -118,53 +115,5 @@ class CustomBottomNavbar extends StatelessWidget {
         ],
       ),
     );
-
-    // // Tampilan untuk item TIDAK AKTIF
-    // Widget inactiveItem = Column(
-    //   mainAxisSize: MainAxisSize.min,
-    //   children: [
-    //     Icon(icon, size: 28, color: inactiveColor),
-    //     const SizedBox(height: 3),
-    //     Text(
-    //       label,
-    //       style: TextStyle(
-    //         color: inactiveColor,
-    //         fontSize: 13,
-    //       ),
-    //     ),
-    //   ],
-    // );
-    //
-    // // Tampilan untuk item AKTIF (dengan pil)
-    // Widget activeItem = Container(
-    //   // padding: EdgeInsets.symmetric(horizontal: 10),
-    //   height: 60,
-    //   decoration: BoxDecoration(
-    //     color: activePillColor,
-    //     borderRadius: BorderRadius.circular(50), // Bentuk pil
-    //   ),
-    //   child: Column(
-    //     mainAxisAlignment: MainAxisAlignment.center,
-    //     // mainAxisSize: MainAxisSize.min,
-    //     children: [
-    //       Icon(icon, size: 28, color: activeColor),
-    //       const SizedBox(height: 3),
-    //       Text(
-    //         label,
-    //         style: TextStyle(
-    //           color: activeColor,
-    //           fontSize: 13,
-    //           fontWeight: FontWeight.w600,
-    //         ),
-    //       ),
-    //     ],
-    //   ),
-    // );
-    //
-    // return GestureDetector(
-    //   onTap: () => onTabSelected(index),
-    //   behavior: HitTestBehavior.opaque, // Pastikan area transparan bisa di-tap
-    //   child: isSelected ? activeItem : inactiveItem,
-    // );
   }
 }

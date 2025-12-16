@@ -1,8 +1,6 @@
-import 'package:askalot/screens/signin_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:async';
-import 'home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -38,11 +36,10 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Spacer untuk menciptakan ruang di atas teks (mendorong konten ke bawah).
-            // Flex 2 membuat jarak di atas lebih kecil.
+
             const Spacer(flex: 2),
 
-            // 1. Teks "Askalot"
+            // Teks "Askalot"
             const Text(
               'Askalot',
               textAlign: TextAlign.center,
@@ -57,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
             // Jarak vertikal 20px antara Teks dan Logo.
             const SizedBox(height: 20),
 
-            // 2. Logo (Pastikan file ada di assets/images/askalot.png)
+            // Logo
             Image.asset(
               'assets/images/askalot.png',
               height: 160,
@@ -67,8 +64,6 @@ class _SplashScreenState extends State<SplashScreen> {
             // Spacer untuk menciptakan ruang di bawah logo.
             // Flex 3 membuat jarak di bawah lebih besar.
             const Spacer(flex: 3),
-
-            // Bilah ungu telah dihapus dari sini.
           ],
         ),
       ),

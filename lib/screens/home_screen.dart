@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../models/thread_model.dart'; // Import model
-import '../widgets/thread_card.dart'; // Import widget
+import '../models/thread_model.dart';
+import '../widgets/thread_card.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -70,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       List<ThreadModel> loadedPosts = (response as List).map((json) => ThreadModel.fromJson(json)).toList();
 
-      // 3. Ambil Data Vote User (Jika user sedang login)
+      // Ambil Data Vote User (Jika user sedang login)
       if (user != null && loadedPosts.isNotEmpty) {
         final threadIds = loadedPosts.map((e) => e.id).toList();
 
@@ -82,12 +82,6 @@ class _HomeScreenState extends State<HomeScreen> {
             .inFilter('thread_id', threadIds);
 
         final Map<int, int> votesMap = {};
-
-        // Map vote ke thread
-        // final votesMap = {
-        //   for (var v in (votesResponse as List))
-        //     (v['thread_id'] as num).toInt(): (v['vote_type'] as num?)?.toInt() ?? 0
-        // };
 
         for (var v in (votesResponse as List)) {
           // Ambil data dengan aman
@@ -115,8 +109,6 @@ class _HomeScreenState extends State<HomeScreen> {
         }).toList();
       }
 
-      // final List<dynamic> data = response as List<dynamic>;
-
       if(mounted){
         setState(() {
           posts = loadedPosts;
@@ -128,13 +120,13 @@ class _HomeScreenState extends State<HomeScreen> {
       if (mounted) {
         setState(() => _isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Gagal memuat data: $e')),
+          SnackBar(content: Text('Failed to load data: $e')),
         );
       }
     }
   }
 
-  // --- FUNGSI BARU: HANDLE VOTE ---
+  // Handle vote
   Future<void> _handleVote(ThreadModel post, int voteType) async {
     final supabase = Supabase.instance.client;
     final user = supabase.auth.currentUser;
@@ -144,13 +136,13 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
-    // 1. Hitung Logika Optimistic Update (Biar UI instan berubah)
+    // Logika UI instan berubah
     int newUpvotes = post.upvotes;
     int newDownvotes = post.downvotes;
     int newUserVote = voteType;
 
     if (post.userVote == voteType) {
-      // Toggle OFF (Sudah vote ini, diklik lagi -> Batal)
+      // Toggle Off
       newUserVote = 0;
       if (voteType == 1) newUpvotes--;
       else newDownvotes--;
@@ -165,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     }
 
-    // 2. Update UI Lokal
+    // Update UI Lokal
     setState(() {
       final index = posts.indexWhere((p) => p.id == post.id);
       if (index != -1) {
@@ -177,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     });
 
-    // 3. Kirim ke Supabase (Panggil RPC)
+    // Kirim ke Supabase
     try {
       await supabase.rpc('handle_vote', params: {
         'p_thread_id': post.id,
@@ -185,7 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     } catch (e) {
       print("Gagal vote: $e");
-      // Revert UI jika gagal (Opsional: panggil _fetchThreads lagi)
+      // Revert UI jika gagal
       _fetchThreads();
     }
   }
@@ -266,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // Posts
           Expanded(
             child: _isLoading
-            // Kondisi 1: Jika Kosong
+            // Kondisi 1, Jika Kosong
               ? const Center(child: CircularProgressIndicator())
               : RefreshIndicator(
                   onRefresh: _fetchThreads,
@@ -299,7 +291,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ],
                         )
-                      // Kondisi 2: Jika Ada Data
+                      // Kondisi 2, Jika Ada Data
                       : ListView.builder(
                           physics: const AlwaysScrollableScrollPhysics(),
                           padding: const EdgeInsets.all(10),
@@ -328,113 +320,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           },
                       ),
               ),
-
           ),
-        ],
-      ),
-
-    );
-  }
-
-  Widget _buildPostCard(
-      BuildContext context, {
-        required String username,
-        required String date,
-        required String avatar,
-        required String content,
-        String? image,
-        required int upvotes,
-        required int downvotes,
-        required int comments,
-      }) {
-    final cardColor = const Color(0xFF2C2C3A);
-    final accent = const Color(0xFF7B7FFF);
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 15),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // User Info
-          Row(
-            children: [
-              CircleAvatar(backgroundImage: NetworkImage(avatar), radius: 18),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(username,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.white)),
-                    Text(date,
-                        style:
-                        const TextStyle(color: Colors.white54, fontSize: 12)),
-                  ],
-                ),
-              ),
-              OutlinedButton(
-                onPressed: () {},
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  side: const BorderSide(color: Colors.white30),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30)),
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                ),
-                child: const Text("Follow"),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-
-          // Post text
-          Text(content,
-              style: const TextStyle(color: Colors.white, fontSize: 16)),
-          if (image != null) ...[
-            const SizedBox(height: 10),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.network(image),
-            ),
-          ],
-          const SizedBox(height: 10),
-
-          // Reactions
-          Row(
-            children: [
-              _reaction(Icons.arrow_upward, upvotes.toString(), accent),
-              const SizedBox(width: 8),
-              _reaction(Icons.arrow_downward, downvotes.toString(), Colors.red),
-              const SizedBox(width: 8),
-              _reaction(Icons.comment, comments.toString(), Colors.white70),
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
-  // 🔸 Reaction Button (Vote / Comment)
-  Widget _reaction(IconData icon, String count, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: Colors.black26,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, size: 18, color: color),
-          const SizedBox(width: 4),
-          Text(count,
-              style: TextStyle(color: color, fontWeight: FontWeight.w600)),
         ],
       ),
     );

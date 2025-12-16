@@ -4,8 +4,6 @@ import 'package:flutter/gestures.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'home_screen.dart';
-
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
 
@@ -37,12 +35,6 @@ class _SignInScreenState extends State<SignInScreen> {
     try {
       final supabase = Supabase.instance.client;
 
-      // final List<dynamic> response = await supabase
-      //   .from('users')
-      //   .select()
-      //   .eq('email', email)
-      //   .eq('password', password);
-
       // supabase auth
       final AuthResponse res = await supabase.auth.signInWithPassword(
         email: email,
@@ -57,20 +49,6 @@ class _SignInScreenState extends State<SignInScreen> {
         }
       }
 
-      // if (response.isNotEmpty) {
-      //   if(mounted){
-      //     context.go('/home'); // Masuk ke ShellRoute
-      //   }
-      // } else {
-      //   if(mounted) {
-      //     ScaffoldMessenger.of(context).showSnackBar(
-      //       SnackBar(
-      //         content: Text("Email atau password salah"),
-      //         backgroundColor: Colors.red,
-      //       ),
-      //     );
-      //   }
-      // }
     } on AuthException catch (e) {
       // Menangkap error khusus Auth (password salah, user tidak ditemukan, dll)
       if (mounted) {
@@ -117,12 +95,9 @@ class _SignInScreenState extends State<SignInScreen> {
               SizedBox(height: 40),
 
               // Logo Aplikasi
-
               Image.asset(
                 'assets/images/askalot.png',
-                // width: 90,
                 height: 80,
-                // fit: BoxFit.contain,
               ),
 
               SizedBox(height: 20),

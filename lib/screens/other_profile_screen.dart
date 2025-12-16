@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../widgets/bottom_navbar.dart';
 import '../models/thread_model.dart';
 
 class OtherProfileScreen extends StatefulWidget {
@@ -12,11 +11,6 @@ class OtherProfileScreen extends StatefulWidget {
 }
 
 class _OtherProfileScreenState extends State<OtherProfileScreen> {
-  int _selectedTab = 3;
-
-  void _onCenterButtonPressed() {
-    print("Center button pressed on Other Profile Screen!");
-  }
 
   ImageProvider _getAvatarProvider(String avatarPath){
     if(avatarPath.startsWith('http')) return NetworkImage(avatarPath);

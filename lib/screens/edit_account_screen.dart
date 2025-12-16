@@ -1,4 +1,3 @@
-import 'package:askalot/widgets/bottom_navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -113,10 +112,6 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
       return const AssetImage('assets/images/askalot.png');
     }
   }
-
-
-  _onCenterButtonPressed(){}
-  int _selectedIndex = 1;
 
   Widget _buildInterestChip(String label){
     return Chip(
@@ -287,7 +282,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 
               SizedBox(height: 40),
 
-              // BAGIAN PROFILE
+              // Bagian Profile
               _buildSectionHeader('Profile'),
 
               SizedBox(height: 20,),
@@ -319,7 +314,6 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                   IconButton(
                     icon: const Icon(Icons.edit, color: Colors.grey),
                     onPressed: (){
-                      // Navigasi ke halaman edit interest
                     },
                   )
                 ],

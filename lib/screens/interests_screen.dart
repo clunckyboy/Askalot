@@ -3,9 +3,9 @@ import 'package:askalot/widgets/topic_selection_item.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-const Color kPrimaryColor = Color(0xFF7A6BFF); // Ungu
-const Color kBackgroundColor = Color(0xFF2B2C35); // Latar belakang gelap
-const Color kSecondaryColor = Color(0xFF3D425B); // Latar belakang list item
+const Color kPrimaryColor = Color(0xFF7A6BFF);
+const Color kBackgroundColor = Color(0xFF2B2C35);
+const Color kSecondaryColor = Color(0xFF3D425B);
 
 class InterestScreen extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -137,7 +137,7 @@ class _InterestScreenState extends State<InterestScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Jarak dari atas
+
               const SizedBox(height: 50),
 
               // Bagian Header (Tombol Back dan Tombol Next)

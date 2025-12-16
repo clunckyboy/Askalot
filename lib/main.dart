@@ -1,16 +1,4 @@
-import 'package:askalot/screens/account_screen.dart';
-import 'package:askalot/screens/comment_section_screen.dart';
-import 'package:askalot/screens/edit_account_screen.dart';
-import 'package:askalot/screens/home_screen.dart';
-import 'package:askalot/screens/interests_screen.dart';
-import 'package:askalot/screens/other_profile_screen.dart';
-import 'package:askalot/screens/posting_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
-import 'screens/signin_screen.dart';
-import 'package:askalot/screens/splash_screen.dart';
-import 'package:askalot/screens/signup_screen.dart';
-import 'package:askalot/screens/splash_screen.dart';
 import 'package:askalot/config/router.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';

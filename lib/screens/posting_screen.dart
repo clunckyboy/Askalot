@@ -133,8 +133,7 @@ class _PostingScreenState extends State<PostingScreen> {
         uploadedImageUrl = supabase.storage.from('posts').getPublicUrl(fileName);
       }
 
-      // B. Insert Data ke Table 'threads'
-      // Pastikan nama kolom sesuai dengan database Anda
+      // Insert Data ke Table 'threads'
       await supabase.from('threads').insert({
         'user_id': user.id,
         'thread_content': content,
@@ -148,7 +147,7 @@ class _PostingScreenState extends State<PostingScreen> {
           const SnackBar(content: Text("Berhasil memposting!")),
         );
 
-        // C. Arahkan ke Home (menggunakan go akan mereset stack home dan memicu fetch ulang)
+        // Arahkan ke Home (menggunakan go akan mereset stack home dan memicu fetch ulang)
         context.go('/home');
       }
 
@@ -300,7 +299,6 @@ class _PostingScreenState extends State<PostingScreen> {
               leading: Icon(Icons.photo, size: 35,),
               title: Text('Photo'),
             ),
-
           ],
         ),
       ),
